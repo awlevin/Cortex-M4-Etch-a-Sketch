@@ -1,5 +1,8 @@
 #include "timers.h"
 
+volatile bool Alert_Timer0A = false;
+volatile bool Alert_Timer0B = false;
+
 
 //*****************************************************************************
 // Verifies that the base address is a valid GPIO base address
@@ -176,11 +179,11 @@ bool gp_timer_config_32(uint32_t base_addr, uint32_t mode, bool count_up, bool e
 }
 
 
-bool timer_config_hw3(void)
+void timer_config_hw3(void)
 {
   uint32_t timer_rcgc_mask;
   uint32_t timer_pr_mask;
-  TIMER0_Type *adc_timer = (TIMER0_Type *) TIMER0_BASE;
+  TIMER0_Type *timer_t = (TIMER0_Type *) TIMER0_BASE;
 	
 	// Declare constants
 	const uint16_t TIMER0A_PRESCALAR = 50;
@@ -195,55 +198,75 @@ bool timer_config_hw3(void)
 	// set the clock for TIMER0
 	SYSCTL->RCGCTIMER |= timer_rcgc_mask;
 	
-	while( (SYSCTL->PRTIMER & timer_pr_mask) == 0)
-	{
-	}
+	while( (SYSCTL->PRTIMER & timer_pr_mask) == 0){};
 	
-	// Disable TIMER0 A and B
-	adc_timer->CTL &= ~(TIMER_CTL_TAEN | TIMER_CTL_TBEN);
+	// Disable TIMER0A and TIMER0B
+	timer_t->CTL &= ~(TIMER_CTL_TAEN | TIMER_CTL_TBEN);
 	
 	// Configure timer to be 16 bit
-	adc_timer->CFG &= TIMER_CFG_16_BIT;
+	timer_t->CFG &= TIMER_CFG_16_BIT;
 	
 	// Clear bits in TAMR and TBMR
-	adc_timer->TAMR &= ~TIMER_TAMR_TAMR_M;
-	adc_timer->TBMR &= ~TIMER_TAMR_TAMR_M;
+	timer_t->TAMR &= ~TIMER_TAMR_TAMR_M;
+	timer_t->TBMR &= ~TIMER_TAMR_TAMR_M;
 	
 	// Set timer mode to count down
-	adc_timer->TAMR |= TIMER_TAMR_TAMR_PERIOD;
-	adc_timer->TBMR |= TIMER_TBMR_TBMR_PERIOD;
+	timer_t->TAMR |= TIMER_TAMR_TAMR_PERIOD;
+	timer_t->TBMR |= TIMER_TBMR_TBMR_PERIOD;
 	
 	// Set timer interrupts
-	adc_timer->IMR |= TIMER_IMR_TATOIM;
-	adc_timer->IMR |= TIMER_IMR_TBTOIM;
+	timer_t->IMR |= TIMER_IMR_TATOIM;
+	timer_t->IMR |= TIMER_IMR_TBTOIM;
 	
 	// Set load register values
-	adc_timer->TAILR = TIMER_LOAD_VALUE;
-	adc_timer->TBILR = TIMER_LOAD_VALUE;
+	timer_t->TAILR = TIMER_LOAD_VALUE;
+	timer_t->TBILR = TIMER_LOAD_VALUE;
 	
-	// Set TIMER0 A and B prescalars
-	adc_timer->TAPV = TIMER0A_PRESCALAR;
-	adc_timer->TBPV = TIMER0B_PRESCALAR;
+	// Set TIMER0A and TIMER0B prescalars
+	timer_t->TAPV = TIMER0A_PRESCALAR;
+	timer_t->TBPV = TIMER0B_PRESCALAR;
+	
+	// Set NVIC interrupts for TIMER0A and TIMER0B
+	timer_nvic_config_hw3();
   
 }
 
-bool timer_start_hw3(void)
+void timer_start_hw3(void)
 {
-	TIMER0_Type *adc_timer = (TIMER0_Type *) TIMER0_BASE;
+	TIMER0_Type *timer_t = (TIMER0_Type *) TIMER0_BASE;
 	
 	// Enable the timers
-	adc_timer->CTL |= TIMER_CTL_TAEN;
-	adc_timer->CTL |= TIMER_CTL_TBEN;
+	timer_t->CTL |= TIMER_CTL_TAEN;
+	timer_t->CTL |= TIMER_CTL_TBEN;
 	
 	// Clear interrupt status bit
-	adc_timer->ICR |= TIMER_ICR_TATOCINT;
-	adc_timer->ICR |= TIMER_ICR_TBTOCINT;
+	timer_t->ICR |= TIMER_ICR_TATOCINT;
+	timer_t->ICR |= TIMER_ICR_TBTOCINT;
 	
 }
 
-bool timer_nvic_config_hw3(void)
+void timer_nvic_config_hw3(void)
 {
-	NVIC_SetPriority(TIMER0A_IRQn | TIMER0B_IRQn, 0);
+	NVIC_SetPriority(TIMER0A_IRQn, 0);
+	NVIC_SetPriority(TIMER0B_IRQn, 1);
 	NVIC_EnableIRQ(TIMER0A_IRQn | TIMER0B_IRQn);
+}
+
+void TIMER0A_Handler(void) {
+	
+	// Set global timer alert variable to true for handling
+	Alert_Timer0A = true;
+	
+	// Clear the interrupt status bit
+	TIMER0->ICR |= TIMER_ICR_TATOCINT;
+}
+
+void TIMER0B_Handler(void) {
+	
+	// Set global timer alert variable to true for handling
+	Alert_Timer0B = true;
+	
+	// Clear the interrupt status bit
+	TIMER0->ICR |= TIMER_ICR_TBTOCINT;
 }
 

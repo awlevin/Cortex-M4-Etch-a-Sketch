@@ -6,6 +6,9 @@
 
 #include "driver_defines.h"
 
+//global here
+//volatile bool Alert_Timer0A;
+//volatile bool Alert_Timer0B;
 
 //*****************************************************************************
 // Configure a general purpose timer to be a 32-bit timer.  
@@ -37,8 +40,8 @@ bool gp_timer_wait(uint32_t base_addr, uint32_t ticks);
 
 
 
-bool timer_config_hw3(void);
-bool timer_start_hw3(void);
-bool timer_nvic_config_hw3(void);
+void timer_config_hw3(void);
+void timer_start_hw3(void);
+void timer_nvic_config_hw3(void);
 
 #endif

@@ -30,6 +30,8 @@ char group[] = "Group00";
 char individual_1[] = "Shyamal Anadkat";
 char individual_2[] = "Aaron Levin";
 
+extern volatile bool Alert_Timer0A;
+extern volatile bool Alert_Timer0B;
 
 
 //*****************************************************************************
@@ -44,9 +46,11 @@ void initialize_hardware(void)
 	// Enable PS2 joystick
 	ps2_initialize();
 	
-	gp_timer_config_32(TIMER0_BASE, 
+	// Enable TIMER0 A and B for HW3
+	timer_config_hw3();
 	
-	
+	// Start TIMER0 A and B for HW3
+	timer_start_hw3();
 	
 	// Configure the LCD and set screen to be black
 	lcd_config_gpio();
@@ -91,10 +95,17 @@ main(void)
   put_string(individual_2);
   put_string("\n\r");  
   put_string("************************************\n\r");
-	
-	print_ps2();
   
   // Reach infinite loop
   while(1){
-  };
+		if(Alert_Timer0A){
+			Alert_Timer0A = false;
+			if(lp_io_read_pin(BLUE_BIT)) {
+				lp_io_set_pin(BLUE_BIT);
+			} else {
+				lp_io_clear_pin(BLUE_BIT);
+			}
+			
+		}
+  }
 }

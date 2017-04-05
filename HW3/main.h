@@ -28,6 +28,12 @@
 
 #include "TM4C123.h"
 
+//extern here
+//extern volatile bool Alert_Timer0A;
+//extern volatile bool Alert_Timer0B;
+
 extern void serialDebugInit(void);
+
+
 
 #endif

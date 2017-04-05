@@ -9,11 +9,11 @@ Project File Date:  04/01/2017
 <h2>Output:</h2>
 Rebuild target 'HW2'
 compiling main.c...
-main.c(39): warning:  #223-D: function "initialize_serial_debug" declared implicitly
+main.c(41): warning:  #223-D: function "initialize_serial_debug" declared implicitly
     initialize_serial_debug();
-main.c(67): warning:  #223-D: function "put_string" declared implicitly
+main.c(75): warning:  #223-D: function "put_string" declared implicitly
       put_string(msg);
-main.c(80): warning:  #223-D: function "put_string" declared implicitly
+main.c(88): warning:  #223-D: function "put_string" declared implicitly
     put_string("\n\r");
 main.c: 3 warnings, 0 errors
 compiling adc.c...
@@ -26,14 +26,17 @@ compiling gpio_port.c...
     GPIOA_Type  *gpioPort;
 ..\drivers\c\gpio_port.c: 3 warnings, 0 errors
 compiling timers.c...
+..\drivers\c\timers.c(252): warning:  #188-D: enumerated type mixed with another type
+        NVIC_EnableIRQ(TIMER0A_IRQn | TIMER0B_IRQn);
+..\drivers\c\timers.c: 1 warning, 0 errors
 compiling launchpad_io.c...
 compiling lcd.c...
 compiling ps2.c...
 assembling startup_TM4C123.s...
 compiling system_TM4C123.c...
 linking...
-Program Size: Code=6476 RO-data=744 RW-data=40 ZI-data=4096  
-".\obj\ece353_base_project.axf" - 0 Error(s), 6 Warning(s).
+Program Size: Code=7252 RO-data=744 RW-data=44 ZI-data=4100  
+".\obj\ece353_base_project.axf" - 0 Error(s), 7 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -60,9 +63,9 @@ Package Vendor: Keil
       Source file:   CMSIS\UserCodeTemplates\ARM\ITM_Retarget.c
 
    * Component: Keil::Device:Startup:1.0.0
-      Source file:   Device\Source\system_TM4C123.c
       Include file:  Device\Include\TM4C123\TM4C123.h
       Source file:   Device\Source\ARM\startup_TM4C123.s
+      Source file:   Device\Source\system_TM4C123.c
 Load "I:\\WIN\\Desktop\\ece353hw3\\HW3\\obj\\ece353_base_project.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
@@ -71,3 +74,24 @@ Verify OK.
 </pre>
 </body>
 </html>
+HW3\\obj\\ece353_base_project.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.
+\system_TM4C123.c
+Target not created
+     Source file:   Device\Source\system_TM4C123.c
+Target not created
+     Source file:   Device\Source\system_TM4C123.c
+Target not created
+
+Target not created
+ystem_TM4C123.c
+file:   CMSIS\UserCodeTemplates\ARM\ITM_Retarget.c
+
+   * Component: Keil::Device:Startup:1.0.0
+      Include file:  Device\Include\TM4C123\TM4C123.h
+      Source file:   Device\Source\ARM\startup_TM4C123.s
+      Source file:   Device\Source\system_TM4C123.c
+Target not created

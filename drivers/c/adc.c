@@ -204,6 +204,9 @@ bool initialize_adc_hw3(  uint32_t adc_base )
 	
 	// Set the ADC interrupt mask
 	myADC->IM |= ADC_IM_MASK2;
+	
+	// Set NVIC interrupt
+	NVIC_EnableIRQ(ADC0SS2_IRQn);
   
   return true;
 }
