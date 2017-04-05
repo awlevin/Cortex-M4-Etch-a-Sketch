@@ -158,11 +158,9 @@ bool initialize_adc_hw3(  uint32_t adc_base )
     case ADC0_BASE :
     {
       
-      // ADD CODE
       // set rcgc_adc_mask
 			rcgc_adc_mask = SYSCTL_RCGCADC_R0;
               
-      // ADD CODE
       // Set pr_mask 
 			pr_mask = SYSCTL_PRADC_R0;
       
@@ -170,11 +168,9 @@ bool initialize_adc_hw3(  uint32_t adc_base )
     }
     case ADC1_BASE :
     {
-      // ADD CODE
       // set rcgc_adc_mask
 			rcgc_adc_mask = SYSCTL_RCGCADC_R1;
       
-      // ADD CODE
       // Set pr_mask
 			pr_mask = SYSCTL_PRADC_R1;
       
@@ -194,57 +190,21 @@ bool initialize_adc_hw3(  uint32_t adc_base )
   // Type Cast adc_base and set it to myADC
   myADC = (ADC0_Type *)adc_base;
   
-  // ADD CODE
-  // disable sample sequencer #3 by writing a 0 to the 
+  // disable sample sequencer #2 by writing a 0 to the 
   // corresponding ASENn bit in the ADCACTSS register 
-	myADC->ACTSS &= ~ADC_ACTSS_ASEN3;
+	myADC->ACTSS &= ~ADC_ACTSS_ASEN2;
 
-  // ADD CODE
   // Set the event multiplexer to trigger conversion on a processor trigger
-  // for sample sequencer #3.
-	myADC->EMUX &= ~ADC_EMUX_EM3_M;
-	myADC->EMUX |= ADC_EMUX_EM3_PROCESSOR;
+  // for sample sequencer #2.
+	myADC->EMUX &= ~ADC_EMUX_EM2_M;
+	myADC->EMUX |= ADC_EMUX_EM2_PROCESSOR;
 
-  // ADD CODE
-  // Set IE0 and END0 in SSCTL3
-	myADC->SSCTL3 |= ADC_SSCTL0_IE0;
-	myADC->SSCTL3 |= ADC_SSCTL0_END0;
+  // Set IE0 and END0 in SSCTL2
+	myADC->SSCTL2 |= ADC_SSCTL2_IE0 | ADC_SSCTL2_END0;
+	
+	// Set the ADC interrupt mask
+	myADC->IM |= ADC_IM_MASK2;
   
   return true;
 }
-
-
-/******************************************************************************
- * Reads SSMUX3 for the given ADC.  Busy waits until completion
- *****************************************************************************/
-uint32_t get_adc_value( uint32_t adc_base, uint8_t channel)
-{
-  ADC0_Type  *myADC;
-  uint32_t result;
-  
-  if( adc_base == 0)
-  {
-    return false;
-  }
-  
-  myADC = (ADC0_Type *)adc_base;
-  
-  myADC->SSMUX3 = channel;          // Set the Channel
-  
-  myADC->ACTSS |= ADC_ACTSS_ASEN3;  // Enable SS3
-  
-  myADC->PSSI =   ADC_PSSI_SS3;     // Start SS3
-  
-  while( (myADC->RIS & ADC_RIS_INR3)  == 0)
-  {
-    // wait
-  }
-  
-  result = myADC->SSFIFO3 & 0xFFF;    // Read 12-bit data
-  
-  myADC->ISC  = ADC_ISC_IN3;          // Ack the conversion
-  
-  return result;
-}
-
 

@@ -35,4 +35,10 @@ bool gp_timer_config_32(uint32_t base_addr, uint32_t mode, bool count_up, bool e
 bool gp_timer_wait(uint32_t base_addr, uint32_t ticks);
 
 
+
+
+bool timer_config_hw3(void);
+bool timer_start_hw3(void);
+bool timer_nvic_config_hw3(void);
+
 #endif

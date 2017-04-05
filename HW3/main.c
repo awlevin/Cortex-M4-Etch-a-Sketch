@@ -44,6 +44,10 @@ void initialize_hardware(void)
 	// Enable PS2 joystick
 	ps2_initialize();
 	
+	gp_timer_config_32(TIMER0_BASE, 
+	
+	
+	
 	// Configure the LCD and set screen to be black
 	lcd_config_gpio();
 	lcd_config_screen();

@@ -1230,17 +1230,17 @@ ARM Macro Assembler    Page 19
               00000000 
               00000000 
 Command Line: --debug --xref --cpu=Cortex-M4.fp --apcs=interwork --depend=.\obj
-\startup_tm4c123.d -o.\obj\startup_tm4c123.o -I"I:\ECE 353\HW3\RTE" -IC:\AppV\m
-dk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include -IC:\AppV\mdk_510\ARM\PACK\Keil\T
-M4C_DFP\1.0.0\Device\Include\TM4C123 --predefine="__EVAL SETA 1" --predefine="_
+\startup_tm4c123.d -o.\obj\startup_tm4c123.o -II:\WIN\Desktop\ece353hw3\HW3\RTE
+ -IC:\AppV\mdk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include -IC:\AppV\mdk_510\ARM
+\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123 --predefine="__EVAL SETA 1" --
 
 
 
 ARM Macro Assembler    Page 20 
 
 
-_MICROLIB SETA 1" --list=.\lst\startup_tm4c123.lst RTE\Device\TM4C123GH6PM\star
-tup_TM4C123.s
+predefine="__MICROLIB SETA 1" --list=.\lst\startup_tm4c123.lst RTE\Device\TM4C1
+23GH6PM\startup_TM4C123.s
 
 
 
