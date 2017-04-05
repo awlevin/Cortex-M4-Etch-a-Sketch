@@ -27,8 +27,8 @@
 #include "lcd.h"
 
 char group[] = "Group00";
-char individual_1[] = "First_Name Last_Name";
-char individual_2[] = "First_Name Last_Name";
+char individual_1[] = "Shyamal Anadkat";
+char individual_2[] = "Aaron Levin";
 
 
 
@@ -50,6 +50,26 @@ void initialize_hardware(void)
 	lcd_clear_screen(LCD_COLOR_BLACK);	
 }
 
+
+
+
+void print_ps2(void)
+{
+  uint16_t x_data, y_data;
+  uint32_t i;
+  char msg[80];
+  while(1)
+  {
+
+    x_data = ps2_get_x();
+    y_data = ps2_get_y();
+    sprintf(msg,"X Dir value : 0x%03x        Y Dir value : 0x%03x\r",x_data, y_data);
+    put_string(msg);
+    for(i=0;i<100000; i++){}
+    
+  }
+}
+
 //*****************************************************************************
 //*****************************************************************************
 int 
@@ -67,7 +87,8 @@ main(void)
   put_string(individual_2);
   put_string("\n\r");  
   put_string("************************************\n\r");
-
+	
+	print_ps2();
   
   // Reach infinite loop
   while(1){
