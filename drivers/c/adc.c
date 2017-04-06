@@ -139,77 +139,50 @@ uint32_t get_adc_value( uint32_t adc_base, uint8_t channel)
  * Initializes ADC to use Sample Sequencer #2, triggered by the processor,
  * no IRQs
  *****************************************************************************/
-bool initialize_adc_hw3(  uint32_t adc_base )
+bool initialize_adc_hw3()
 {
-  ADC0_Type  *myADC;
-  uint32_t rcgc_adc_mask;
-  uint32_t pr_mask;
-  
-
-  // examine the adc_base.  Verify that it is either ADC0 or ADC1
-  // Set the rcgc_adc_mask and pr_mask  
-  switch (adc_base) 
-  {
-    case ADC0_BASE :
-    {
-      
-      // set rcgc_adc_mask
-			rcgc_adc_mask = SYSCTL_RCGCADC_R0;
-              
-      // Set pr_mask 
-			pr_mask = SYSCTL_PRADC_R0;
-      
-      break;
-    }
-    case ADC1_BASE :
-    {
-      // set rcgc_adc_mask
-			rcgc_adc_mask = SYSCTL_RCGCADC_R1;
-      
-      // Set pr_mask
-			pr_mask = SYSCTL_PRADC_R1;
-      
-      break;
-    }
-    
-    default:
-      return false;
-  }
-  
   // Turn on the ADC Clock
-  SYSCTL->RCGCADC |= rcgc_adc_mask;
+  SYSCTL->RCGCADC |= SYSCTL_RCGCADC_R0;
   
   // Wait for ADCx to become ready
-  while( (pr_mask & SYSCTL->PRADC) != pr_mask){}
-    
-  // Type Cast adc_base and set it to myADC
-  myADC = (ADC0_Type *)adc_base;
-  
+  while( (SYSCTL_PRADC_R0 & SYSCTL->PRADC) != SYSCTL_PRADC_R0){}
+      
   // disable sample sequencer #2 by writing a 0 to the 
   // corresponding ASENn bit in the ADCACTSS register 
-	myADC->ACTSS &= ~ADC_ACTSS_ASEN2;
+	ADC0->ACTSS &= ~ADC_ACTSS_ASEN2;
+		
+	// Clear ALL of the interrupt status bits
+	ADC0->ISC = 0xFFFFFFFF;
+		
+	// Set priority of sequencer 2 to be the greatest priority	
+	ADC0->SSPRI = ADC_SSPRI_SS3_4TH | ADC_SSPRI_SS2_3RD;
 		
   // Set the event multiplexer to trigger conversion on a processor trigger
   // for sample sequencer #2.
-	myADC->EMUX &= ~ADC_EMUX_EM2_M;
-	myADC->EMUX |= ADC_EMUX_EM2_PROCESSOR;
-
-  // Set IE0 and END0 in SSCTL2
-	myADC->SSCTL2 |= ADC_SSCTL2_IE1 | ADC_SSCTL2_END1;
+//	ADC0->EMUX &= ~ADC_EMUX_EM2_M;
+//	ADC0->EMUX |= ADC_EMUX_EM2_PROCESSOR;
+		
+		// TA said this sets all of the sample sequencers to be triggered by software which is
+		// ok for this lab
+		ADC0->EMUX = 0; 
 	
-	//myADC -> SSMUX2 |= (PS2_X_ADC_CHANNEL | (PS2_Y_ADC_CHANNEL << 4));
+	// Configure SSMUX2 to read raw ADC values for X and then Y
+	ADC0 -> SSMUX2 |= (PS2_X_ADC_CHANNEL << 4 | (PS2_Y_ADC_CHANNEL));
 		
 	// Set the ADC interrupt mask
-	myADC->IM |= ADC_IM_MASK2;
+	ADC0->IM |= ADC_IM_MASK2;
 		
-	// Enable SS2
-	myADC->ACTSS |= ADC_ACTSS_ASEN2;
+	 // Set when to generate interrupts upon end of sequence
+	ADC0->SSCTL2 |= ADC_SSCTL2_IE1 | ADC_SSCTL2_END1;
 	
 	// Set priority 
 	NVIC_SetPriority(ADC0SS2_IRQn, 2);
 	
 	// Set NVIC interrupt
 	NVIC_EnableIRQ(ADC0SS2_IRQn);
+	
+	// Enable SS2
+	ADC0->ACTSS |= ADC_ACTSS_ASEN2;
   
   return true;
 }

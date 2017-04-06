@@ -187,6 +187,26 @@ main(void) {
       timer0B_count++;
       Alert_Timer0B = false;
     }
+		
+		// ADC COMPUTATION HANDLER
+    if (Alert_ADC0_Conversion) {
+      
+			// Toggle ADC0 Conversion notifier
+			Alert_ADC0_Conversion = false;
+      
+      // Update current x position with current PS2 joystick ADC value
+      curr_x_px = ADC0 -> SSFIFO2 & ADC_SSFIFO2_DATA_M;
+
+      // Update current y position with current PS2 joystick ADC value
+      curr_y_px = ADC0 -> SSFIFO2 & ADC_SSFIFO2_DATA_M;
+
+      // TESTING PS2 values. WORKS NOW >>>
+      print_ps2(curr_x_px, curr_y_px);
+    }
+		
+		
+		
+		
 
     // If interrupt A has occurred 10 times
     if (timer0A_count == 10) {
@@ -255,25 +275,6 @@ main(void) {
 		// POLL FOR SW2 BIT
     if (!lp_io_read_pin(SW2_BIT)) {
       put_string("\n\r ERASE MODE ON");
-    }
-
-		// ALERT ADC COMPUTATION >> DONE AND TESTED 
-    if (Alert_ADC0_Conversion) {
-      Alert_ADC0_Conversion = false;
-      
-			// used to examine curr position of PS2 joystick
-
-      // Select 1st sample from PS2 X channel
-      ADC0 -> SSMUX2 |= (PS2_X_ADC_CHANNEL | (PS2_Y_ADC_CHANNEL << 4));
-
-      // Update current x position with current PS2 joystick ADC value
-      curr_y_px = ADC0 -> SSFIFO2 & ADC_SSFIFO2_DATA_M;
-
-      // Update current y position with current PS2 joystick ADC value
-      curr_x_px = ADC0 -> SSFIFO2 & ADC_SSFIFO2_DATA_M;
-
-      // TESTING PS2 values. WORKS NOW >>>
-      print_ps2(curr_x_px, curr_y_px);
     }
   }
 }

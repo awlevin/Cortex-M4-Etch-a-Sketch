@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\obj\ece353_base_project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\obj\ece353_base_project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Thu Apr 06 17:10:34 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5040049: Last Updated: Thu Apr 06 17:35:35 2017
 <BR><P>
 <H3>Maximum Stack Usage =        128 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -281,7 +281,7 @@ Global Symbols
 <P><STRONG><a name="[da]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
 
 <P><STRONG><a name="[7d]"></a>initialize_hardware</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = initialize_hardware &rArr; timer_config_hw3 &rArr; timer_nvic_config_hw3 &rArr; __NVIC_SetPriority
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = initialize_hardware &rArr; timer_config_hw3 &rArr; timer_nvic_config_hw3 &rArr; NVIC_SetPriority
 </UL>
 <BR>[Calls]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_start_hw3
@@ -321,13 +321,13 @@ Global Symbols
 <P><STRONG><a name="[87]"></a>print_ps2</STRONG> (Thumb, 30 bytes, Stack size 96 bytes, main.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = print_ps2 &rArr; __2sprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;put_string
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
+<BR>[Calls]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
+<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;put_string
 </UL>
 <BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[76]"></a>main</STRONG> (Thumb, 550 bytes, Stack size 8 bytes, main.o(.text))
+<P><STRONG><a name="[76]"></a>main</STRONG> (Thumb, 538 bytes, Stack size 8 bytes, main.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = main &rArr; print_ps2 &rArr; __2sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;put_string
@@ -353,8 +353,8 @@ Global Symbols
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ps2_get_x
 </UL>
 
-<P><STRONG><a name="[ac]"></a>initialize_adc_hw3</STRONG> (Thumb, 178 bytes, Stack size 20 bytes, adc.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = initialize_adc_hw3
+<P><STRONG><a name="[ac]"></a>initialize_adc_hw3</STRONG> (Thumb, 170 bytes, Stack size 8 bytes, adc.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = initialize_adc_hw3
 </UL>
 <BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ps2_initialize_hw3
 </UL>
@@ -443,16 +443,16 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[a0]"></a>timer_nvic_config_hw3</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, timers.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = timer_nvic_config_hw3 &rArr; __NVIC_SetPriority
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = timer_nvic_config_hw3 &rArr; NVIC_SetPriority
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_EnableIRQ
-<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_SetPriority
+<BR>[Calls]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_EnableIRQ
+<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SetPriority
 </UL>
 <BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_config_hw3
 </UL>
 
 <P><STRONG><a name="[81]"></a>timer_config_hw3</STRONG> (Thumb, 150 bytes, Stack size 32 bytes, timers.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = timer_config_hw3 &rArr; timer_nvic_config_hw3 &rArr; __NVIC_SetPriority
+<BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = timer_config_hw3 &rArr; timer_nvic_config_hw3 &rArr; NVIC_SetPriority
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_nvic_config_hw3
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_clock_masks
@@ -546,7 +546,7 @@ Global Symbols
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initialize_adc
 </UL>
 
-<P><STRONG><a name="[80]"></a>ps2_initialize_hw3</STRONG> (Thumb, 14 bytes, Stack size 8 bytes, ps2.o(.text))
+<P><STRONG><a name="[80]"></a>ps2_initialize_hw3</STRONG> (Thumb, 12 bytes, Stack size 8 bytes, ps2.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = ps2_initialize_hw3 &rArr; initialize_adc_gpio_pins &rArr; gpio_config_alternate_function
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initialize_adc_gpio_pins
@@ -1379,13 +1379,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[b2]"></a>validate_print_ice_validation_info_start</STRONG> (Thumb, 68 bytes, Stack size 112 bytes, validate_uart.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;put_string
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
+<BR><BR>[Calls]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
+<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;put_string
 </UL>
 
 <P><STRONG><a name="[b3]"></a>validate_print_ice_validation_info_end</STRONG> (Thumb, 68 bytes, Stack size 112 bytes, validate_uart.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;put_string
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
+<BR><BR>[Calls]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
+<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;put_string
 </UL>
 
 <P><STRONG><a name="[b6]"></a>staff_uart_config_gpio</STRONG> (Thumb, 82 bytes, Stack size 0 bytes, validate_uart.o(.text))
@@ -1434,8 +1434,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[b8]"></a>print_test_status</STRONG> (Thumb, 52 bytes, Stack size 112 bytes, validate_uart.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;put_string
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
+<BR><BR>[Calls]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
+<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;put_string
 </UL>
 
 <P><STRONG><a name="[b9]"></a>validate_uart</STRONG> (Thumb, 126 bytes, Stack size 24 bytes, validate_uart.o(.text), UNUSED)
@@ -1558,8 +1558,8 @@ Local Symbols
 <LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gpio_config_port_control
 </UL>
 
-<P><STRONG><a name="[a1]"></a>__NVIC_SetPriority</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, timers.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = __NVIC_SetPriority
+<P><STRONG><a name="[a1]"></a>NVIC_SetPriority</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, timers.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = NVIC_SetPriority
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_nvic_config_hw3
 </UL>
@@ -1576,7 +1576,7 @@ Local Symbols
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_config_hw3
 </UL>
 
-<P><STRONG><a name="[a2]"></a>__NVIC_EnableIRQ</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, timers.o(.text))
+<P><STRONG><a name="[a2]"></a>NVIC_EnableIRQ</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, timers.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_nvic_config_hw3
 </UL>
 
@@ -1650,7 +1650,7 @@ Local Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;validate_spi_rcgc
 </UL>
 
-<P><STRONG><a name="[d2]"></a>_printf_core</STRONG> (Thumb, 996 bytes, Stack size 104 bytes, printf8.o(i._printf_core), UNUSED)
+<P><STRONG><a name="[d2]"></a>_printf_core</STRONG> (Thumb, 988 bytes, Stack size 104 bytes, printf8.o(i._printf_core), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding

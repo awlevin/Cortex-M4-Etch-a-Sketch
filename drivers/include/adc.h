@@ -70,6 +70,6 @@ uint32_t get_adc_value( uint32_t adc_base, uint8_t channel);
  *  true  - if an valid base address was passed in
  *  false - if an invalid base address was passed in
  *****************************************************************************/
-bool initialize_adc_hw3(  uint32_t adc_base );
+bool initialize_adc_hw3();
 
 #endif
