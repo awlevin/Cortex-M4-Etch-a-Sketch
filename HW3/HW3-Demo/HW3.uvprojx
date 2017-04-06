@@ -15,7 +15,7 @@
         <TargetCommonOption>
           <Device>TM4C123GH6PM</Device>
           <Vendor>Texas Instruments</Vendor>
-          <PackID>Keil.TM4C_DFP.1.0.0</PackID>
+          <PackID>Keil.TM4C_DFP.1.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x040000) IRAM(0x20000000,0x008000) CPUTYPE("Cortex-M4") FPU2 CLOCK(80000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -330,6 +330,7 @@
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
+            <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--debug</MiscControls>
               <Define></Define>
@@ -421,18 +422,18 @@
       </component>
     </components>
     <files>
-      <file attr="config" category="source" condition="TM4C123x" name="Device\Source\ARM\startup_TM4C123.s" version="1.0.0">
+      <file attr="config" category="source" condition="Compiler ARMCC" name="Device\Source\ARM\startup_TM4C123.s" version="1.0.0">
         <instance index="0">RTE\Device\TM4C123GH6PM\startup_TM4C123.s</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.0" condition="TM4C CMSIS Device"/>
-        <package name="TM4C_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.0.0"/>
+        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.1" condition="TM4C123x CMSIS"/>
+        <package name="TM4C_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.1.0"/>
         <targetInfos>
           <targetInfo name="HW2"/>
         </targetInfos>
       </file>
-      <file attr="config" category="source" condition="TM4C123x" name="Device\Source\system_TM4C123.c" version="1.0.1">
+      <file attr="config" category="source" name="Device\Source\system_TM4C123.c" version="1.0.1">
         <instance index="0">RTE\Device\TM4C123GH6PM\system_TM4C123.c</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.0" condition="TM4C CMSIS Device"/>
-        <package name="TM4C_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.0.0"/>
+        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.1" condition="TM4C123x CMSIS"/>
+        <package name="TM4C_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.1.0"/>
         <targetInfos>
           <targetInfo name="HW2"/>
         </targetInfos>

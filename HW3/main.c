@@ -40,8 +40,8 @@ uint32_t curr_lcdX = 119;
 uint32_t curr_lcdY = 159;
 uint32_t prev_lcdX = 119;
 uint32_t prev_lcdY = 159;
-uint32_t curr_x_px;
-uint32_t curr_y_px;
+uint16_t curr_x_px;
+uint16_t curr_y_px;
 
 static int sw1_debounce_counter = 0;
 static int timer0A_count = 0;
@@ -49,6 +49,7 @@ static int timer0B_count = 0;
 uint16_t draw_color = LCD_COLOR_GREEN;
 uint16_t move_color = LCD_COLOR_RED;
 uint32_t pixels[10][240];
+uint8_t mode = 1;
 
 uint16_t x_left_threshold = (0xFFF / 4) * 3;
 uint16_t y_up_threshold = (0xFFF / 4) * 3;
@@ -71,7 +72,7 @@ typedef enum {
 }
 MODE_STATES;
 
-static MODE_STATES mode = DRAW;
+//static MODE_STATES mode = DRAW;
 
 //*****************************************************************************
 //*****************************************************************************
@@ -113,7 +114,7 @@ bool read_lcd(uint32_t xpx, uint32_t ypx) {
 bool move_x_pixels(uint32_t * prev, uint32_t * curr) {
 
   * prev = * curr;
-  if (curr_x_px >= x_left_threshold) { * curr += 1;
+  if (curr_x_px >= x_left_threshold  && (*curr <= 239)) { * curr += 1;
     return true;
   } else if (curr_x_px <= x_right_threshold) { * curr -= 1;
     return true;
@@ -125,7 +126,7 @@ bool move_x_pixels(uint32_t * prev, uint32_t * curr) {
 bool move_y_pixels(uint32_t * prev, uint32_t * curr) {
 
   * prev = * curr;
-  if (curr_y_px >= y_up_threshold) { * curr += 1;
+  if (curr_y_px >= y_up_threshold && (*curr <= 319) ) { * curr += 1;
     return true;
   }
   if (curr_y_px <= y_down_threshold) { * curr -= 1;
@@ -171,6 +172,8 @@ main(void) {
   put_string("************************************\n\r");
 
   lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+	
+	
   // Reach infinite loop
   while (1) {
 
@@ -213,43 +216,41 @@ main(void) {
       }
 
       // Start SS2 conversion
-      ADC0 -> PSSI |= ADC_PSSI_SS2;
+       ADC0 -> PSSI |= ADC_PSSI_SS2;
 
       // Reset timer0B count
       timer0B_count = 0;
     }
 
     // Wait 60 milliseconds for debounce counter
-    if (sw1_debounce_counter == 6) {
+    if (sw1_debounce_counter == 3) {
+		
+			sw1_debounce_counter = 0;
 			
 			if(lp_io_read_pin(SW1_BIT)) {
+			mode = ~mode;
+			if(mode) {
+				lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+		}
+	}
+			
+		if(mode){
+			  if (move_x_pixels( & prev_lcdX, & curr_lcdX) || move_y_pixels( & prev_lcdY, & curr_lcdY)) {
+          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+          update_lcd_shadow_map(curr_lcdX, curr_lcdY);
+		} 
+	}	else {
+			
+		if (move_x_pixels( & prev_lcdX, & curr_lcdX) || move_y_pixels( & prev_lcdY, & curr_lcdY)) {
+			if(read_lcd(prev_lcdX, prev_lcdY)) {
+				lcd_draw_pixel(prev_lcdX, 1, prev_lcdY, 1, draw_color);
 				
-			put_string(mode);
-      mode = ~mode;
-      if (mode == MOVE) {
-        // if X or Y have changed, draw the new pixel and update the LCD
-        if (move_x_pixels( & prev_lcdX, & curr_lcdX) || move_y_pixels( & prev_lcdY, & curr_lcdY)) {
-          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
-          update_lcd_shadow_map(curr_lcdX, curr_lcdY);
-        }
-      } else {
-        if (move_x_pixels( & prev_lcdX, & curr_lcdX) && move_y_pixels( & prev_lcdY, & curr_lcdY)) {
-          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, move_color);
-        }
-      }
+			} else {
+					lcd_draw_pixel(prev_lcdX, 1, prev_lcdY, 1, LCD_COLOR_BLACK);
 			}
-
-			// Reset debounce counter
-      sw1_debounce_counter = 0;
-    } else {
-      if (mode == DRAW) {
-        // if X or Y have changed, draw the new pixel and update the LCD
-        if (move_x_pixels( & prev_lcdX, & curr_lcdX) || move_y_pixels( & prev_lcdY, & curr_lcdY)) {
-          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
-          update_lcd_shadow_map(curr_lcdX, curr_lcdY);
-        }
-      }
-    }
+		}
+	}
+}
 
 		// POLL FOR SW2 BIT
     if (!lp_io_read_pin(SW2_BIT)) {
@@ -261,8 +262,9 @@ main(void) {
       Alert_ADC0_Conversion = false;
 
       // Start SS2
-      ADC0 -> PSSI |= ADC_PSSI_SS2;
-      // used to examine curr position of PS2 joystick
+      // ADC0 -> PSSI |= ADC_PSSI_SS2;
+      
+			// used to examine curr position of PS2 joystick
 
       // Select 1st sample from PS2 X channel
       ADC0 -> SSMUX2 |= (PS2_X_ADC_CHANNEL | (PS2_Y_ADC_CHANNEL << 4));

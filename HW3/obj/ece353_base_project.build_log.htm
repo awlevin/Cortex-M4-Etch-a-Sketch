@@ -37,33 +37,29 @@ compiling gpio_port.c...
     GPIOA_Type  *gpioPort;
 ..\drivers\c\gpio_port.c: 3 warnings, 0 errors
 compiling main.c...
-main.c(83): warning:  #223-D: function "initialize_serial_debug" declared implicitly
-      initialize_serial_debug();
-main.c(170): warning:  #223-D: function "put_string" declared implicitly
-      put_string(msg);
-main.c(166): warning:  #177-D: variable "i"  was declared but never referenced
-      uint32_t i;
-main.c(181): warning:  #223-D: function "put_string" declared implicitly
-      put_string("\n\r");
-main.c(248): warning:  #188-D: enumerated type mixed with another type
-                  mode = ~mode;
-main.c(293): warning:  #1-D: last line of file ends without a newline
-  }
-main.c: 6 warnings, 0 errors
+main.c(80): warning:  #223-D: function "initialize_serial_debug" declared implicitly
+    initialize_serial_debug();
+main.c(152): warning:  #223-D: function "put_string" declared implicitly
+    put_string(msg);
+main.c(148): warning:  #177-D: variable "i"  was declared but never referenced
+    uint32_t i;
+main.c(161): warning:  #223-D: function "put_string" declared implicitly
+    put_string("\n\r");
+main.c: 4 warnings, 0 errors
 compiling timers.c...
 compiling launchpad_io.c...
-assembling startup_TM4C123.s...
 compiling lcd.c...
 ..\peripherals\c\lcd.c(235): warning:  #177-D: variable "i"  was declared but never referenced
     uint16_t i,j;
 ..\peripherals\c\lcd.c(235): warning:  #177-D: variable "j"  was declared but never referenced
     uint16_t i,j;
 ..\peripherals\c\lcd.c: 2 warnings, 0 errors
-compiling ps2.c...
+assembling startup_TM4C123.s...
 compiling system_TM4C123.c...
+compiling ps2.c...
 linking...
-Program Size: Code=8160 RO-data=744 RW-data=92 ZI-data=19460  
-".\obj\ece353_base_project.axf" - 0 Error(s), 11 Warning(s).
+Program Size: Code=8240 RO-data=744 RW-data=104 ZI-data=13696  
+".\obj\ece353_base_project.axf" - 0 Error(s), 9 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -89,10 +85,10 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.0.1
 
    * Component: Keil::Device:Startup:1.0.1
-      Source file:   Device\Source\ARM\startup_TM4C123.s
       Include file:  Device\Include\TM4C123\TM4C123.h
+      Source file:   Device\Source\ARM\startup_TM4C123.s
       Source file:   Device\Source\system_TM4C123.c
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
