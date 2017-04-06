@@ -35,12 +35,13 @@ extern volatile bool Alert_Timer0A;
 extern volatile bool Alert_Timer0B;
 extern volatile bool Alert_ADC0_Conversion;
 
+static int sw1_debounce_counter = 0; 
 
 static int timer0A_count = 0;
 static int timer0B_count = 0;
 
-static uint16_t curr_x = 0;
-static uint16_t curr_y = 0; 
+static uint16_t curr_x_px = 319/2;
+static uint16_t curr_y_px = 239/2; 
 
 
 typedef enum 
@@ -50,6 +51,13 @@ typedef enum
   DEBOUNCE_2ND_ZERO,
   DEBOUNCE_PRESSED
 } DEBOUNCE_STATES;
+
+
+typedef enum
+{
+	MOVE,
+	DRAW
+} FSM_STATES;
 
 
 //*****************************************************************************
@@ -80,20 +88,132 @@ void initialize_hardware(void)
 }
 
 
+// Debounce FSM for SW1 
+bool sw1_debounce_fsm(void)
+{
+  static DEBOUNCE_STATES state = DEBOUNCE_ONE;
+  bool pin_logic_level;
+  
+  pin_logic_level = lp_io_read_pin(SW1_BIT);
+  
+  switch (state)
+  {
+    case DEBOUNCE_ONE:
+    {
+      if(pin_logic_level)
+      {
+        state = DEBOUNCE_ONE;
+      }
+      else
+      {
+        state = DEBOUNCE_1ST_ZERO;
+      }
+      break;
+    }
+    case DEBOUNCE_1ST_ZERO:
+    {
+      if(pin_logic_level)
+      {
+        state = DEBOUNCE_ONE;
+      }
+      else
+      {
+        state = DEBOUNCE_2ND_ZERO;
+      }
+      break;
+    }
+    case DEBOUNCE_2ND_ZERO:
+    {
+      if(pin_logic_level)
+      {
+        state = DEBOUNCE_ONE;
+      }
+      else
+      {
+        state = DEBOUNCE_PRESSED;
+      }
+      break;
+    }
+    case DEBOUNCE_PRESSED:
+    {
+      if(pin_logic_level)
+      {
+        state = DEBOUNCE_ONE;
+      }
+      else
+      {
+        state = DEBOUNCE_PRESSED;
+      }
+      break;
+    }
+    default:
+    {
+      while(1){};
+    }
+  }
+  
+  if(state == DEBOUNCE_2ND_ZERO )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 
+
+void debounce_wait(void) 
+{
+  int i = 10000;
+  // Delay
+  while(i > 0)
+  {
+    i--;
+  }
+}
+
+// Implementing FSM for DRAW/MOVE Mode SW1
+// De-bounced on initial button press where button alue has been 
+// low for 60ms. 
+void sw1_fsm(void) {
+	
+	  static FSM_STATES fsm_state = DRAW;
+	
+	  // Delay before entering the code to determine which FSM state to 
+    // transistion to.
+    //debounce_wait();
+	  if (sw1_debounce_fsm() ) {
+	
+		switch(fsm_state) {
+			
+		case DRAW:
+		fsm_state = MOVE; 
+		put_string("\n\r IN DRAW MODE");
+		break;
+			
+			
+		case MOVE: 
+		fsm_state = DRAW;
+		put_string("\n\r IN MOVE MODE");
+		break; 
+			
+		default:
+			break;
+		}
+
+	}
+
+}
 
 void print_ps2(uint16_t x_data, uint16_t y_data)
 {
   uint32_t i;
   char msg[80];
-  while(1)
-  {
-
-    sprintf(msg,"X Dir value : 0x%03x        Y Dir value : 0x%03x\r",x_data, y_data);
-    put_string(msg);
-    // for(i=0;i<100000; i++){}
+  
+	//sprintf(msg,"X Dir value : 0x%03x Y Dir value : 0x%03x\r",x_data, y_data);
+  put_string(msg);
     
-  }
 }
 
 
@@ -112,7 +232,7 @@ main(void)
   put_string(individual_1);
   put_string("\n\r     Name:");
   put_string(individual_2);
-  put_string("\n\r");  
+	put_string("\n\r     Name:");
 	put_string(individual_3);
   put_string("\n\r");  
   put_string("************************************\n\r");
@@ -120,10 +240,11 @@ main(void)
   // Reach infinite loop
   while(1){
 		
-		//print_ps2(curr_x, curr_y);
+		//print_ps2(curr_x_px, curr_y_px);
 		
 		if(Alert_Timer0A) {
 			timer0A_count++;
+			sw1_debounce_counter++;
 			Alert_Timer0A = false;
 		}
 		
@@ -134,7 +255,7 @@ main(void)
 		
 		// If interrupt A has occurred 10 times
 		if(timer0A_count == 10){
-			
+						
 			// Toggle Blue LED
 			if(!lp_io_read_pin(BLUE_BIT)) {
 				lp_io_set_pin(BLUE_BIT);
@@ -166,6 +287,17 @@ main(void)
 			timer0B_count = 0;
 		}
 		
+		if(sw1_debounce_counter == 3) {
+			sw1_fsm();
+			sw1_debounce_counter = 0;
+		}
+		
+		
+		if(!lp_io_read_pin(SW2_BIT)) {
+			put_string("\n\r ERASE MODE ON");
+		} 
+		
+		
 		// if ADC interrupt has occured 
 		
 		if(Alert_ADC0_Conversion) {
@@ -174,14 +306,19 @@ main(void)
 			//used to examine curr position of PS2 joystick
 			
 			// Update current x position with current PS2 joystick ADC value
-			curr_x += ADC0->SSFIFO2 & ADC_SSFIFO2_DATA_M;
+			curr_x_px = ADC0->SSFIFO2 & ADC_SSFIFO2_DATA_M;
 			
 			// Update current y position with current PS2 joystick ADC value
-			curr_y += ADC0->SSFIFO2 & ADC_SSFIFO2_DATA_M;
+			curr_y_px = ADC0->SSFIFO2 & ADC_SSFIFO2_DATA_M;
 			
 			// UPDATE LCD ACCORDINGLY
+			
+			
+			
+			
+			
 			// TESTING Ps2 values 
-	    print_ps2(curr_x, curr_y);
+	    print_ps2(curr_x_px, curr_y_px);
 			
 			
 		}
