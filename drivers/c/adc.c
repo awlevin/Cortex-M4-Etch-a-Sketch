@@ -195,25 +195,14 @@ bool initialize_adc_hw3(  uint32_t adc_base )
 	myADC->EMUX |= ADC_EMUX_EM2_PROCESSOR;
 
   // Set IE0 and END0 in SSCTL2
-	myADC->SSCTL2 |= ADC_SSCTL2_IE0 | ADC_SSCTL2_END0;
-	
-	// Clear sample sequencer mux select bits
-	myADC->SSMUX2 &= ~(ADC_SSMUX2_MUX0_M | ADC_SSMUX2_MUX1_M);
-	
-	// Select 1st sample from PS2 X channel
-	myADC->SSMUX2 |= PS2_X_ADC_CHANNEL;
-	
-	// Select 2nd sample from PS2 Y channel
-	myADC->SSMUX2 |= (PS2_Y_ADC_CHANNEL << 4);
-		
-	// Enable SS2
-	myADC->ACTSS |= ADC_ACTSS_ASEN2;
-	
-	// Start SS2
-	myADC->PSSI |= ADC_PSSI_SS2;
+	myADC->SSCTL2 |= ADC_SSCTL2_IE1 | ADC_SSCTL2_END1;
+			
 		
 	// Set the ADC interrupt mask
 	myADC->IM |= ADC_IM_MASK2;
+		
+	// Enable SS2
+	myADC->ACTSS |= ADC_ACTSS_ASEN2;
 	
 	// Set priority 
 	NVIC_SetPriority(ADC0SS2_IRQn, 2);
@@ -225,10 +214,6 @@ bool initialize_adc_hw3(  uint32_t adc_base )
 }
 
 void ADC0SS2_Handler(void) {
-	
-	
-	// READ from ss2 fifo 
-	
 	
 	// Set an alert for the main method to handle
 	Alert_ADC0_Conversion = true;

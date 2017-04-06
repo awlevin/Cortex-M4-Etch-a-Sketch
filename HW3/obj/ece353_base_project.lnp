@@ -1,4 +1,4 @@
---cpu Cortex-M4.fp
+--cpu=Cortex-M4.fp
 ".\obj\main.o"
 ".\obj\adc.o"
 ".\obj\gpio_port.o"
