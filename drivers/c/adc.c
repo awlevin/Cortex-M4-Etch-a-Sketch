@@ -226,6 +226,10 @@ bool initialize_adc_hw3(  uint32_t adc_base )
 
 void ADC0SS2_Handler(void) {
 	
+	
+	// READ from ss2 fifo 
+	
+	
 	// Set an alert for the main method to handle
 	Alert_ADC0_Conversion = true;
 	

@@ -1,6 +1,6 @@
 Dependencies for Project 'HW3', Target 'HW2': (DO NOT MODIFY !)
-F (.\main.c)(0x58E5CD07)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -IC:\Keil_v5\ARM\Pack\ARM\CMSIS\3.20.4\CMSIS\Include -I..\include -I..\drivers\include -I..\peripherals\include --debug-I I:\WIN\Desktop\ece353hw3\HW3\RTE-I C:\AppV\mdk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include-I C:\AppV\mdk_510\ARM\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123-D_RTE_ -DTM4C123GH6PM -o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
-I (main.h)(0x58E5C29A)
+F (.\main.c)(0x58E5EBCB)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -IC:\Keil_v5\ARM\Pack\ARM\CMSIS\3.20.4\CMSIS\Include -I..\include -I..\drivers\include -I..\peripherals\include --debug-I I:\WIN\Desktop\ece353hw3\HW3\RTE-I C:\AppV\mdk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include-I C:\AppV\mdk_510\ARM\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123-D_RTE_ -DTM4C123GH6PM -o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
+I (main.h)(0x58E5E2BD)
 I (C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\include\stdio.h)(0x57D6B510)
 I (C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\include\stdint.h)(0x57D6B510)
 I (C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\include\string.h)(0x57D6B511)
@@ -19,9 +19,9 @@ I (..\peripherals\include\ps2.h)(0x58E1397A)
 I (..\drivers\include\gpio_port.h)(0x587FDFE2)
 I (..\drivers\include\adc.h)(0x58E5AB05)
 I (..\peripherals\include\launchpad_io.h)(0x58B71A28)
-I (..\peripherals\include\lcd.h)(0x58B7B10C)
-F (.\main.h)(0x58E5C29A)()
-F (..\drivers\c\adc.c)(0x58E5BF00)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -IC:\Keil_v5\ARM\Pack\ARM\CMSIS\3.20.4\CMSIS\Include -I..\include -I..\drivers\include -I..\peripherals\include --debug-I I:\WIN\Desktop\ece353hw3\HW3\RTE-I C:\AppV\mdk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include-I C:\AppV\mdk_510\ARM\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123-D_RTE_ -DTM4C123GH6PM -o .\obj\adc.o --omf_browse .\obj\adc.crf --depend .\obj\adc.d)
+I (..\peripherals\include\lcd.h)(0x58E5DD75)
+F (.\main.h)(0x58E5E2BD)()
+F (..\drivers\c\adc.c)(0x58E5DB7B)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -IC:\Keil_v5\ARM\Pack\ARM\CMSIS\3.20.4\CMSIS\Include -I..\include -I..\drivers\include -I..\peripherals\include --debug-I I:\WIN\Desktop\ece353hw3\HW3\RTE-I C:\AppV\mdk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include-I C:\AppV\mdk_510\ARM\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123-D_RTE_ -DTM4C123GH6PM -o .\obj\adc.o --omf_browse .\obj\adc.crf --depend .\obj\adc.d)
 I (..\drivers\include\adc.h)(0x58E5AB05)
 I (C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\include\stdint.h)(0x57D6B510)
 I (C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\include\stdbool.h)(0x57D6B510)
@@ -76,8 +76,8 @@ I (C:\AppV\mdk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include\core_cm4_simd.h)(0x57D
 I (C:\AppV\mdk_510\ARM\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123\system_TM4C123.h)(0x57D9590B)
 I (..\drivers\include\driver_defines.h)(0x58DBE048)
 I (C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\include\errno.h)(0x57D6B50A)
-F (..\peripherals\c\lcd.c)(0x58B88FF8)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -IC:\Keil_v5\ARM\Pack\ARM\CMSIS\3.20.4\CMSIS\Include -I..\include -I..\drivers\include -I..\peripherals\include --debug-I I:\WIN\Desktop\ece353hw3\HW3\RTE-I C:\AppV\mdk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include-I C:\AppV\mdk_510\ARM\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123-D_RTE_ -DTM4C123GH6PM -o .\obj\lcd.o --omf_browse .\obj\lcd.crf --depend .\obj\lcd.d)
-I (..\peripherals\include\lcd.h)(0x58B7B10C)
+F (..\peripherals\c\lcd.c)(0x58E5DD63)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork -IC:\Keil_v5\ARM\Pack\ARM\CMSIS\3.20.4\CMSIS\Include -I..\include -I..\drivers\include -I..\peripherals\include --debug-I I:\WIN\Desktop\ece353hw3\HW3\RTE-I C:\AppV\mdk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include-I C:\AppV\mdk_510\ARM\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123-D_RTE_ -DTM4C123GH6PM -o .\obj\lcd.o --omf_browse .\obj\lcd.crf --depend .\obj\lcd.d)
+I (..\peripherals\include\lcd.h)(0x58E5DD75)
 I (C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\include\stdint.h)(0x57D6B510)
 I (..\drivers\include\driver_defines.h)(0x58DBE048)
 I (C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\include\stdbool.h)(0x57D6B510)

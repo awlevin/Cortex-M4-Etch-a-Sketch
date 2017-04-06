@@ -9,19 +9,17 @@ Project File Date:  04/01/2017
 <h2>Output:</h2>
 Rebuild target 'HW2'
 compiling main.c...
-main.c(67): warning:  #223-D: function "initialize_serial_debug" declared implicitly
+main.c(82): warning:  #223-D: function "initialize_serial_debug" declared implicitly
     initialize_serial_debug();
-main.c(192): warning:  #223-D: function "put_string" declared implicitly
-                put_string("\n\r IN DRAW MODE");
-main.c(215): warning:  #223-D: function "put_string" declared implicitly
+main.c(274): warning:  #223-D: function "put_string" declared implicitly
     put_string(msg);
-main.c(211): warning:  #177-D: variable "i" was declared but never referenced
+main.c(270): warning:  #177-D: variable "i" was declared but never referenced
     uint32_t i;
-main.c(227): warning:  #223-D: function "put_string" declared implicitly
+main.c(286): warning:  #223-D: function "put_string" declared implicitly
     put_string("\n\r");
-main.c(328): warning:  #1-D: last line of file ends without a newline
+main.c(400): warning:  #1-D: last line of file ends without a newline
   }
-main.c: 6 warnings, 0 errors
+main.c: 5 warnings, 0 errors
 compiling adc.c...
 compiling gpio_port.c...
 ..\drivers\c\gpio_port.c(82): warning:  #188-D: enumerated type mixed with another type
@@ -34,12 +32,17 @@ compiling gpio_port.c...
 compiling timers.c...
 compiling launchpad_io.c...
 compiling lcd.c...
+..\peripherals\c\lcd.c(235): warning:  #177-D: variable "i" was declared but never referenced
+    uint16_t i,j;
+..\peripherals\c\lcd.c(235): warning:  #177-D: variable "j" was declared but never referenced
+    uint16_t i,j;
+..\peripherals\c\lcd.c: 2 warnings, 0 errors
 compiling ps2.c...
 assembling startup_TM4C123.s...
 compiling system_TM4C123.c...
 linking...
-Program Size: Code=7408 RO-data=744 RW-data=76 ZI-data=4100  
-".\obj\ece353_base_project.axf" - 0 Error(s), 9 Warning(s).
+Program Size: Code=7888 RO-data=744 RW-data=96 ZI-data=13696  
+".\obj\ece353_base_project.axf" - 0 Error(s), 10 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -72,6 +75,23 @@ Package Vendor: Keil
 Load "I:\\WIN\\Desktop\\ece353hw3\\HW3\\obj\\ece353_base_project.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
+Programming Failed!
+Error: Flash Download failed  -  "Cortex-M4"
+Load "I:\\WIN\\Desktop\\ece353hw3\\HW3\\obj\\ece353_base_project.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Connection failed!, error code=&d
+Error: Flash Download failed  -  Target DLL has been cancelled
+Load "I:\\WIN\\Desktop\\ece353hw3\\HW3\\obj\\ece353_base_project.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Connection failed!, error code=&d
+Error: Flash Download failed  -  Target DLL has been cancelled
+Load "I:\\WIN\\Desktop\\ece353hw3\\HW3\\obj\\ece353_base_project.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
 Programming Done.
 Verify OK.
-fy OK.
+l::Device:Startup:1.0.0
+      Source file:   Device\Source\ARM\startup_TM4C123.s
+      Include file:  Device\Include\TM4C123\TM4C123.h
+      Source file:   Device\Source\system_TM4C123.c
+Target not created

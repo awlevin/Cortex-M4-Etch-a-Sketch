@@ -221,6 +221,35 @@ void lcd_draw_image(
   }
 }
 
+
+
+
+void lcd_draw_pixel(
+  uint16_t x_start, 
+  uint16_t image_width_bits, 
+  uint16_t y_start, 
+  uint16_t image_height_pixels, 
+  uint16_t color
+)
+{
+  uint16_t i,j;
+  uint16_t x0;
+  uint16_t x1;
+  uint16_t y0;
+  uint16_t y1;
+ 
+  x0 = x_start;
+  x1 = x_start + image_width_bits-1;
+  
+  y0 = y_start;
+  y1 = y_start  + image_height_pixels-1 ;
+  
+  lcd_set_pos(x0, x1, y0, y1);
+	
+	lcd_write_data_u16(color);
+  
+}
+
 /*******************************************************************************
 * Function Name: lcd_config_gpio
 ********************************************************************************

@@ -26,6 +26,7 @@
 #include "launchpad_io.h"
 #include "lcd.h"
 
+//***********VARIABLES********************//
 char group[] = "Group02";
 char individual_1[] = "Shyamal Anadkat";
 char individual_2[] = "Aaron Levin";
@@ -35,15 +36,28 @@ extern volatile bool Alert_Timer0A;
 extern volatile bool Alert_Timer0B;
 extern volatile bool Alert_ADC0_Conversion;
 
-static int sw1_debounce_counter = 0; 
+uint16_t curr_lcdX = 119; 
+uint16_t curr_lcdY = 159;
+uint16_t prev_lcdX = 119;
+uint16_t prev_lcdY = 159;
+uint16_t curr_x_px;
+uint16_t curr_y_px;
 
+static int sw1_debounce_counter = 0; 
 static int timer0A_count = 0;
 static int timer0B_count = 0;
+uint16_t draw_color = LCD_COLOR_GREEN;
+uint16_t move_color = LCD_COLOR_RED;
+uint16_t pixels[320][15];
 
-static uint16_t curr_x_px = 319/2;
-static uint16_t curr_y_px = 239/2; 
+uint16_t x_left_threshold = (0xFFF/4)*3;
+uint16_t y_up_threshold = (0xFFF/4)*3;
+uint16_t x_right_threshold = (0xFFF/4);
+uint16_t y_down_threshold = (0xFFF/4);
 
 
+
+//************ENUMS********************//
 typedef enum 
 {
   DEBOUNCE_ONE,
@@ -57,8 +71,9 @@ typedef enum
 {
 	MOVE,
 	DRAW
-} FSM_STATES;
+} MODE_STATES;
 
+ static MODE_STATES mode = DRAW;
 
 //*****************************************************************************
 //*****************************************************************************
@@ -85,8 +100,50 @@ void initialize_hardware(void)
 	lcd_config_gpio();
 	lcd_config_screen();
 	lcd_clear_screen(LCD_COLOR_BLACK);	
+	
+	memset(pixels, 0, 600); 
 }
 
+
+
+void update_lcd(uint16_t xpx, uint16_t ypx ){
+	pixels[ypx][xpx/16] |= (1 << (xpx%16));
+}
+
+
+bool read_lcd(uint16_t xpx, uint16_t ypx) {
+	if ((pixels[ypx][xpx/16] & (1 << (xpx%16))) == 1) 
+	   return true;
+	else
+		 return false;
+}
+
+
+
+bool move_x_pixels( uint16_t * prev, uint16_t* curr ) {
+	
+	*prev = *curr;
+	if(curr_x_px >= x_left_threshold) {
+			*curr += 1;
+			 return true; 
+	} else if(curr_x_px <= x_right_threshold) {
+			*curr -= 1;
+		  return true; 
+	}	else {return false;}
+}
+
+
+bool move_y_pixels( uint16_t * prev, uint16_t* curr ) {
+	
+	*prev = *curr;
+	if(curr_y_px >= y_up_threshold ) {
+			*curr += 1;
+			 return true; 
+	} if(curr_y_px <= y_down_threshold ) {
+			*curr -= 1;
+		  return true; 
+	}	else {return false;}
+}
 
 // Debounce FSM for SW1 
 bool sw1_debounce_fsm(void)
@@ -173,39 +230,6 @@ void debounce_wait(void)
   }
 }
 
-// Implementing FSM for DRAW/MOVE Mode SW1
-// De-bounced on initial button press where button alue has been 
-// low for 60ms. 
-void sw1_fsm(void) {
-	
-	  static FSM_STATES fsm_state = DRAW;
-	
-	  // Delay before entering the code to determine which FSM state to 
-    // transistion to.
-    //debounce_wait();
-	  if (sw1_debounce_fsm() ) {
-	
-		switch(fsm_state) {
-			
-		case DRAW:
-		fsm_state = MOVE; 
-		put_string("\n\r IN DRAW MODE");
-		break;
-			
-			
-		case MOVE: 
-		fsm_state = DRAW;
-		put_string("\n\r IN MOVE MODE");
-		break; 
-			
-		default:
-			break;
-		}
-
-	}
-
-}
-
 void print_ps2(uint16_t x_data, uint16_t y_data)
 {
   uint32_t i;
@@ -239,8 +263,6 @@ main(void)
 	
   // Reach infinite loop
   while(1){
-		
-		//print_ps2(curr_x_px, curr_y_px);
 		
 		if(Alert_Timer0A) {
 			timer0A_count++;
@@ -287,8 +309,32 @@ main(void)
 			timer0B_count = 0;
 		}
 		
+		// Wait 30 milliseconds for debounce counter
 		if(sw1_debounce_counter == 3) {
-			sw1_fsm();
+			if( sw1_fsm() ) {
+				mode = ~mode;
+				if(mode == DRAW) {
+					lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+					update_lcd(curr_lcdX, curr_lcdY);
+				}
+				
+				if(mode == DRAW) {
+							
+					if(move_x_pixels(&prev_lcdX, &curr_lcdX) || move_y_pixels(&prev_lcdX, &curr_lcdX) ) {
+						lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+						update_lcd(curr_lcdX, curr_lcdY);
+					}
+					
+					
+					
+					
+					
+				}
+				
+			}
+			
+			
+			// Reset debounce counter
 			sw1_debounce_counter = 0;
 		}
 		
@@ -318,9 +364,19 @@ main(void)
 			
 			
 			// TESTING Ps2 values 
-	    print_ps2(curr_x_px, curr_y_px);
+	    // print_ps2(curr_x_px, curr_y_px);
 			
 			
+		}
+		
+		if(fsm_state == DRAW) {
+			if(move_x_pixels(&prev_lcdX, &curr_lcdX) || move_y_pixels(&prev_lcdX, &curr_lcdX) ) {
+			lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+			update_lcd(curr_lcdX, curr_lcdY);
+		}
+		} else {
+			lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+			update_lcd(curr_lcdX, curr_lcdY);
 		}
 		
 		
