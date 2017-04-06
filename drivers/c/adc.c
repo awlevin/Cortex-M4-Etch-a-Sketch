@@ -196,7 +196,8 @@ bool initialize_adc_hw3(  uint32_t adc_base )
 
   // Set IE0 and END0 in SSCTL2
 	myADC->SSCTL2 |= ADC_SSCTL2_IE1 | ADC_SSCTL2_END1;
-			
+	
+	//myADC -> SSMUX2 |= (PS2_X_ADC_CHANNEL | (PS2_Y_ADC_CHANNEL << 4));
 		
 	// Set the ADC interrupt mask
 	myADC->IM |= ADC_IM_MASK2;

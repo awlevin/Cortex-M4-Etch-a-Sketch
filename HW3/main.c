@@ -260,9 +260,6 @@ main(void) {
 		// ALERT ADC COMPUTATION >> DONE AND TESTED 
     if (Alert_ADC0_Conversion) {
       Alert_ADC0_Conversion = false;
-
-      // Start SS2
-      // ADC0 -> PSSI |= ADC_PSSI_SS2;
       
 			// used to examine curr position of PS2 joystick
 
