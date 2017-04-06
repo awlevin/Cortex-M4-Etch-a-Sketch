@@ -27,7 +27,7 @@
 #include "lcd.h"
 
 //***********VARIABLES********************//
-char group[] = "Group02";
+char group[] = "Group36";
 char individual_1[] = "Shyamal Anadkat";
 char individual_2[] = "Aaron Levin";
 char individual_3[] = "Sneha Patri";
@@ -177,18 +177,20 @@ main(void) {
   // Reach infinite loop
   while (1) {
 
+		// TIMER0A HANDLER
     if (Alert_Timer0A) {
       timer0A_count++;
       sw1_debounce_counter++;
       Alert_Timer0A = false;
     }
 
+		// TIMER0B HANDLER
     if (Alert_Timer0B) {
       timer0B_count++;
       Alert_Timer0B = false;
     }
 		
-		// ADC COMPUTATION HANDLER
+		// ADC COMPUTATION HANDLER (UPDATES PS2 X/Y VALUES)
     if (Alert_ADC0_Conversion) {
       
 			// Toggle ADC0 Conversion notifier
@@ -203,12 +205,8 @@ main(void) {
       // TESTING PS2 values. WORKS NOW >>>
       print_ps2(curr_x_px, curr_y_px);
     }
-		
-		
-		
-		
 
-    // If interrupt A has occurred 10 times
+    // If interrupt A has occurred 10 times -> TOGGLE BLUE LED
     if (timer0A_count == 10) {
 
       // Toggle Blue LED
@@ -222,7 +220,7 @@ main(void) {
       timer0A_count = 0;
     }
 
-    // If interrupt B has occurred 10 times
+    // If interrupt B has occurred 10 times (TOGGLE GREEN LED AND START ADC CONVERSION)
     if (timer0B_count == 10) {
 
       // Reset timer0B alert
@@ -243,15 +241,16 @@ main(void) {
     }
 
     // Wait 60 milliseconds for debounce counter
-    if (sw1_debounce_counter == 3) {
-		
-			sw1_debounce_counter = 0;
+    if (sw1_debounce_counter == 6) {
 			
 			if(lp_io_read_pin(SW1_BIT)) {
 			mode = ~mode;
 			if(mode) {
 				lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
 		}
+			
+		//Reset debounce counter
+		sw1_debounce_counter = 0;
 	}
 			
 		if(mode){
