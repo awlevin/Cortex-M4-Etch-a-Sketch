@@ -11,15 +11,17 @@ Rebuild target 'HW2'
 compiling main.c...
 main.c(82): warning:  #223-D: function "initialize_serial_debug" declared implicitly
     initialize_serial_debug();
-main.c(274): warning:  #223-D: function "put_string" declared implicitly
+main.c(239): warning:  #223-D: function "put_string" declared implicitly
     put_string(msg);
-main.c(270): warning:  #177-D: variable "i" was declared but never referenced
+main.c(235): warning:  #177-D: variable "i" was declared but never referenced
     uint32_t i;
-main.c(286): warning:  #223-D: function "put_string" declared implicitly
+main.c(251): warning:  #223-D: function "put_string" declared implicitly
     put_string("\n\r");
-main.c(400): warning:  #1-D: last line of file ends without a newline
+main.c(317): warning:  #188-D: enumerated type mixed with another type
+                                mode = ~mode;
+main.c(378): warning:  #1-D: last line of file ends without a newline
   }
-main.c: 5 warnings, 0 errors
+main.c: 6 warnings, 0 errors
 compiling adc.c...
 compiling gpio_port.c...
 ..\drivers\c\gpio_port.c(82): warning:  #188-D: enumerated type mixed with another type
@@ -41,8 +43,8 @@ compiling ps2.c...
 assembling startup_TM4C123.s...
 compiling system_TM4C123.c...
 linking...
-Program Size: Code=7888 RO-data=744 RW-data=96 ZI-data=13696  
-".\obj\ece353_base_project.axf" - 0 Error(s), 10 Warning(s).
+Program Size: Code=7824 RO-data=744 RW-data=96 ZI-data=19456  
+".\obj\ece353_base_project.axf" - 0 Error(s), 11 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -75,10 +77,12 @@ Package Vendor: Keil
 Load "I:\\WIN\\Desktop\\ece353hw3\\HW3\\obj\\ece353_base_project.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
-Programming Failed!
-Error: Flash Download failed  -  "Cortex-M4"
-Load "I:\\WIN\\Desktop\\ece353hw3\\HW3\\obj\\ece353_base_project.axf" 
-Connecting: Mode=JTAG, Speed=1000000Hz
+Programming Done.
+Verify OK.
+</pre>
+</body>
+</html>
+z
 Connection failed!, error code=&d
 Error: Flash Download failed  -  Target DLL has been cancelled
 Load "I:\\WIN\\Desktop\\ece353hw3\\HW3\\obj\\ece353_base_project.axf" 

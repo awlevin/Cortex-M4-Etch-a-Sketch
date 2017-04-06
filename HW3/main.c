@@ -48,7 +48,7 @@ static int timer0A_count = 0;
 static int timer0B_count = 0;
 uint16_t draw_color = LCD_COLOR_GREEN;
 uint16_t move_color = LCD_COLOR_RED;
-uint16_t pixels[320][15];
+uint16_t pixels[320][24];
 
 uint16_t x_left_threshold = (0xFFF/4)*3;
 uint16_t y_up_threshold = (0xFFF/4)*3;
@@ -105,8 +105,8 @@ void initialize_hardware(void)
 }
 
 
-
-void update_lcd(uint16_t xpx, uint16_t ypx ){
+// updates the pixel map
+void update_lcd_shadow_map(uint16_t xpx, uint16_t ypx ){
 	pixels[ypx][xpx/16] |= (1 << (xpx%16));
 }
 
@@ -147,7 +147,7 @@ bool move_y_pixels( uint16_t * prev, uint16_t* curr ) {
 
 // Debounce FSM for SW1 
 bool sw1_debounce_fsm(void)
-{
+{	
   static DEBOUNCE_STATES state = DEBOUNCE_ONE;
   bool pin_logic_level;
   
@@ -311,24 +311,30 @@ main(void)
 		
 		// Wait 30 milliseconds for debounce counter
 		if(sw1_debounce_counter == 3) {
-			if( sw1_fsm() ) {
+			
+			// POTENTIAL TODO: bug here?
+			if( sw1_debounce_fsm() ) {
 				mode = ~mode;
 				if(mode == DRAW) {
 					lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
-					update_lcd(curr_lcdX, curr_lcdY);
+					update_lcd_shadow_map(curr_lcdX, curr_lcdY);
 				}
 				
 				if(mode == DRAW) {
 							
+					// if X or Y have changed, draw the new pixel and update the LCD
 					if(move_x_pixels(&prev_lcdX, &curr_lcdX) || move_y_pixels(&prev_lcdX, &curr_lcdX) ) {
 						lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
-						update_lcd(curr_lcdX, curr_lcdY);
+						update_lcd_shadow_map(curr_lcdX, curr_lcdY);
 					}
+					// else if in erase mode
+				} else {
 					
-					
-					
-					
-					
+					// this is for going diagonal
+					if(move_x_pixels(&prev_lcdX, &curr_lcdX) && move_y_pixels(&prev_lcdX, &curr_lcdX)) {
+						
+						
+					}
 				}
 				
 			}
@@ -368,17 +374,5 @@ main(void)
 			
 			
 		}
-		
-		if(fsm_state == DRAW) {
-			if(move_x_pixels(&prev_lcdX, &curr_lcdX) || move_y_pixels(&prev_lcdX, &curr_lcdX) ) {
-			lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
-			update_lcd(curr_lcdX, curr_lcdY);
-		}
-		} else {
-			lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
-			update_lcd(curr_lcdX, curr_lcdY);
-		}
-		
-		
 	}
 }
