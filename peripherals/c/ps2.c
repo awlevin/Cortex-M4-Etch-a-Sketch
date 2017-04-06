@@ -69,7 +69,7 @@ void ps2_initialize(void)
 void ps2_initialize_hw3()
 {
 	initialize_adc_gpio_pins();
-	initialize_adc(PS2_ADC_BASE);
+	initialize_adc_hw3(PS2_ADC_BASE);
 }
 
 

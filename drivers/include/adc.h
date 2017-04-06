@@ -27,7 +27,7 @@
 #include <stdbool.h>
 #include "TM4C123GH6PM.h"
 #include "driver_defines.h"
-
+#include "ps2.h"
 
 /******************************************************************************
  * Initializes ADC to use Sample Sequencer #3, triggered by software, no IRQs

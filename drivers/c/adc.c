@@ -23,11 +23,13 @@
 #include "adc.h"
 #include "driver_defines.h"
 
+
 volatile bool Alert_ADC0_Conversion = false;
 
 /******************************************************************************
  * Initializes ADC to use Sample Sequencer #3, triggered by the processor,
  * no IRQs
+ * @DEPRECATED for this HW
  *****************************************************************************/
 bool initialize_adc(  uint32_t adc_base )
 {
@@ -133,15 +135,6 @@ uint32_t get_adc_value( uint32_t adc_base, uint8_t channel)
 }
 
 
-
-
-
-
-
-
-
-
-
 /******************************************************************************
  * Initializes ADC to use Sample Sequencer #2, triggered by the processor,
  * no IRQs
@@ -195,7 +188,7 @@ bool initialize_adc_hw3(  uint32_t adc_base )
   // disable sample sequencer #2 by writing a 0 to the 
   // corresponding ASENn bit in the ADCACTSS register 
 	myADC->ACTSS &= ~ADC_ACTSS_ASEN2;
-
+		
   // Set the event multiplexer to trigger conversion on a processor trigger
   // for sample sequencer #2.
 	myADC->EMUX &= ~ADC_EMUX_EM2_M;
@@ -204,8 +197,26 @@ bool initialize_adc_hw3(  uint32_t adc_base )
   // Set IE0 and END0 in SSCTL2
 	myADC->SSCTL2 |= ADC_SSCTL2_IE0 | ADC_SSCTL2_END0;
 	
+	// Clear sample sequencer mux select bits
+	myADC->SSMUX2 &= ~(ADC_SSMUX2_MUX0_M | ADC_SSMUX2_MUX1_M);
+	
+	// Select 1st sample from PS2 X channel
+	myADC->SSMUX2 |= PS2_X_ADC_CHANNEL;
+	
+	// Select 2nd sample from PS2 Y channel
+	myADC->SSMUX2 |= (PS2_Y_ADC_CHANNEL << 4);
+		
+	// Enable SS2
+	myADC->ACTSS |= ADC_ACTSS_ASEN2;
+	
+	// Start SS2
+	myADC->PSSI |= ADC_PSSI_SS2;
+		
 	// Set the ADC interrupt mask
 	myADC->IM |= ADC_IM_MASK2;
+	
+	// Set priority 
+	NVIC_SetPriority(ADC0SS2_IRQn, 2);
 	
 	// Set NVIC interrupt
 	NVIC_EnableIRQ(ADC0SS2_IRQn);

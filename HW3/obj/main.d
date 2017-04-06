@@ -17,5 +17,6 @@
 .\obj\main.o: ..\peripherals\include\ps2.h
 .\obj\main.o: ..\drivers\include\gpio_port.h
 .\obj\main.o: ..\drivers\include\adc.h
+.\obj\main.o: ..\peripherals\include\ps2.h
 .\obj\main.o: ..\peripherals\include\launchpad_io.h
 .\obj\main.o: ..\peripherals\include\lcd.h

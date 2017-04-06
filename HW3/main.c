@@ -26,9 +26,10 @@
 #include "launchpad_io.h"
 #include "lcd.h"
 
-char group[] = "Group00";
+char group[] = "Group02";
 char individual_1[] = "Shyamal Anadkat";
 char individual_2[] = "Aaron Levin";
+char individual_3[] = "Sneha Patri";
 
 extern volatile bool Alert_Timer0A;
 extern volatile bool Alert_Timer0B;
@@ -61,10 +62,10 @@ void initialize_hardware(void)
 	lp_io_init();
 	
 	// Enable PS2 joystick
-	ps2_initialize();
+	ps2_initialize_hw3();
 	
 	// Configure adc sample sequencer to sample from x and y separately
-	ps2_adc_init_hw3();
+	//ps2_adc_init_hw3();
 	
 	// Enable TIMER0 A and B for HW3
 	timer_config_hw3();
@@ -90,23 +91,11 @@ void print_ps2(uint16_t x_data, uint16_t y_data)
 
     sprintf(msg,"X Dir value : 0x%03x        Y Dir value : 0x%03x\r",x_data, y_data);
     put_string(msg);
-    for(i=0;i<100000; i++){}
+    // for(i=0;i<100000; i++){}
     
   }
 }
 
-//bool ps2_adc_init_hw3(void) {
-//	
-//	// Clear sample sequencer mux select bits
-//	ADC0->SSMUX2 &= ~(ADC_SSMUX2_MUX0_M | ADC_SSMUX2_MUX1_M);
-//	
-//	// Select 1st sample from PS2 X channel
-//	ADC0->SSMUX2 |= PS2_X_ADC_CHANNEL;
-//	
-//	// Select 2nd sample from PS2 Y channel
-//	ADC0->SSMUX2 |= (PS2_Y_ADC_CHANNEL << 4);
-
-//}
 
 //*****************************************************************************
 //*****************************************************************************
@@ -123,6 +112,8 @@ main(void)
   put_string(individual_1);
   put_string("\n\r     Name:");
   put_string(individual_2);
+  put_string("\n\r");  
+	put_string(individual_3);
   put_string("\n\r");  
   put_string("************************************\n\r");
 	
@@ -168,6 +159,19 @@ main(void)
 				lp_io_clear_pin(GREEN_BIT);
 			}
 			
+			// Start SS2 conversion
+			ADC0->PSSI |= ADC_PSSI_SS2;
+			
+			// Reset timer0B count
+			timer0B_count = 0;
+		}
+		
+		// if ADC interrupt has occured 
+		
+		if(Alert_ADC0_Conversion) {
+			Alert_ADC0_Conversion = false; 
+			
+			//used to examine curr position of PS2 joystick
 			
 			// Update current x position with current PS2 joystick ADC value
 			curr_x += ADC0->SSFIFO2 & ADC_SSFIFO2_DATA_M;
@@ -175,8 +179,13 @@ main(void)
 			// Update current y position with current PS2 joystick ADC value
 			curr_y += ADC0->SSFIFO2 & ADC_SSFIFO2_DATA_M;
 			
-			// Reset timer0B count
-			timer0B_count = 0;
+			// UPDATE LCD ACCORDINGLY
+			// TESTING Ps2 values 
+	    print_ps2(curr_x, curr_y);
+			
+			
 		}
+		
+		
 	}
 }

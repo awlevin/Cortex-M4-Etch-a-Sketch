@@ -268,6 +268,8 @@ void TIMER0B_Handler(void) {
 	// Set global timer alert variable to true for handling
 	Alert_Timer0B = true;
 	
+	ADC0->PSSI |= ADC_PSSI_SS2;
+	
 	// Clear the interrupt status bit
 	TIMER0->ICR |= TIMER_ICR_TBTOCINT;
 }

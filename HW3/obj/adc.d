@@ -11,3 +11,6 @@
 .\obj\adc.o: ..\drivers\include\driver_defines.h
 .\obj\adc.o: C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\bin\..\include\stdio.h
 .\obj\adc.o: C:\ProgramData\App-V\61A5EFCB-2A44-465D-90CC-A7A4A41DA0A8\D50B82DC-885B-4BF1-9479-31B1EC1F01B7\Root\ARM\ARMCC\bin\..\include\errno.h
+.\obj\adc.o: ..\peripherals\include\ps2.h
+.\obj\adc.o: ..\drivers\include\gpio_port.h
+.\obj\adc.o: ..\drivers\include\adc.h

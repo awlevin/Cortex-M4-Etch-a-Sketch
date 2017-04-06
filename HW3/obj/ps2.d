@@ -13,3 +13,4 @@
 .\obj\ps2.o: C:\AppV\mdk_510\ARM\PACK\ARM\CMSIS\4.1.1\CMSIS\Include\core_cm4_simd.h
 .\obj\ps2.o: C:\AppV\mdk_510\ARM\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123\system_TM4C123.h
 .\obj\ps2.o: ..\drivers\include\adc.h
+.\obj\ps2.o: ..\peripherals\include\ps2.h
