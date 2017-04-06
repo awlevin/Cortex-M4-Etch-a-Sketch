@@ -100,12 +100,19 @@ main(void)
   while(1){
 		if(Alert_Timer0A){
 			Alert_Timer0A = false;
-			if(lp_io_read_pin(BLUE_BIT)) {
+			if(!lp_io_read_pin(BLUE_BIT)) {
 				lp_io_set_pin(BLUE_BIT);
 			} else {
 				lp_io_clear_pin(BLUE_BIT);
 			}
-			
+		}
+		if(Alert_Timer0B) {
+			Alert_Timer0B = false;
+			if(!lp_io_read_pin(GREEN_BIT)) {
+				lp_io_set_pin(GREEN_BIT);
+			} else {
+				lp_io_clear_pin(GREEN_BIT);
+			}
 		}
   }
 }

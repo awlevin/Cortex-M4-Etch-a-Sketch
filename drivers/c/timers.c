@@ -186,8 +186,8 @@ void timer_config_hw3(void)
   TIMER0_Type *timer_t = (TIMER0_Type *) TIMER0_BASE;
 	
 	// Declare constants
-	const uint16_t TIMER0A_PRESCALAR = 50;
-	const uint16_t TIMER0B_PRESCALAR = 150;
+	const uint8_t TIMER0A_PRESCALAR = 50;
+	const uint8_t TIMER0B_PRESCALAR = 150;
 	const uint16_t TIMER_LOAD_VALUE = 10000;
 	
 	
@@ -204,11 +204,12 @@ void timer_config_hw3(void)
 	timer_t->CTL &= ~(TIMER_CTL_TAEN | TIMER_CTL_TBEN);
 	
 	// Configure timer to be 16 bit
-	timer_t->CFG &= TIMER_CFG_16_BIT;
+	timer_t->CFG &= ~TIMER_CFG_M;
+	timer_t->CFG |= TIMER_CFG_16_BIT;
 	
 	// Clear bits in TAMR and TBMR
 	timer_t->TAMR &= ~TIMER_TAMR_TAMR_M;
-	timer_t->TBMR &= ~TIMER_TAMR_TAMR_M;
+	timer_t->TBMR &= ~TIMER_TBMR_TBMR_M;
 	
 	// Set timer mode to count down
 	timer_t->TAMR |= TIMER_TAMR_TAMR_PERIOD;
@@ -223,8 +224,8 @@ void timer_config_hw3(void)
 	timer_t->TBILR = TIMER_LOAD_VALUE;
 	
 	// Set TIMER0A and TIMER0B prescalars
-	timer_t->TAPV = TIMER0A_PRESCALAR;
-	timer_t->TBPV = TIMER0B_PRESCALAR;
+	timer_t->TAPR = TIMER0A_PRESCALAR;
+	timer_t->TBPR = TIMER0B_PRESCALAR;
 	
 	// Set NVIC interrupts for TIMER0A and TIMER0B
 	timer_nvic_config_hw3();
@@ -247,9 +248,10 @@ void timer_start_hw3(void)
 
 void timer_nvic_config_hw3(void)
 {
-	NVIC_SetPriority(TIMER0A_IRQn, 0);
+	NVIC_SetPriority(TIMER0A_IRQn, 2);
 	NVIC_SetPriority(TIMER0B_IRQn, 1);
-	NVIC_EnableIRQ(TIMER0A_IRQn | TIMER0B_IRQn);
+	NVIC_EnableIRQ(TIMER0A_IRQn);
+	NVIC_EnableIRQ(TIMER0B_IRQn);
 }
 
 void TIMER0A_Handler(void) {
