@@ -6,10 +6,6 @@
 
 #include "driver_defines.h"
 
-//global here
-//volatile bool Alert_Timer0A;
-//volatile bool Alert_Timer0B;
-
 //*****************************************************************************
 // Configure a general purpose timer to be a 32-bit timer.  
 //

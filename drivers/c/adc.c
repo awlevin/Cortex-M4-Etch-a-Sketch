@@ -23,6 +23,8 @@
 #include "adc.h"
 #include "driver_defines.h"
 
+volatile bool Alert_ADC0_Conversion = false;
+
 /******************************************************************************
  * Initializes ADC to use Sample Sequencer #3, triggered by the processor,
  * no IRQs
@@ -209,5 +211,15 @@ bool initialize_adc_hw3(  uint32_t adc_base )
 	NVIC_EnableIRQ(ADC0SS2_IRQn);
   
   return true;
+}
+
+void ADC0SS2_Handler(void) {
+	
+	// Set an alert for the main method to handle
+	Alert_ADC0_Conversion = true;
+	
+	// Clear the interrupt
+	ADC0->ISC |= ADC_ISC_IN2;
+
 }
 

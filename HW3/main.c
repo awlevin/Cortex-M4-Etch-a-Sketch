@@ -32,6 +32,23 @@ char individual_2[] = "Aaron Levin";
 
 extern volatile bool Alert_Timer0A;
 extern volatile bool Alert_Timer0B;
+extern volatile bool Alert_ADC0_Conversion;
+
+
+static int timer0A_count = 0;
+static int timer0B_count = 0;
+
+static uint16_t curr_x = 0;
+static uint16_t curr_y = 0; 
+
+
+typedef enum 
+{
+  DEBOUNCE_ONE,
+  DEBOUNCE_1ST_ZERO,
+  DEBOUNCE_2ND_ZERO,
+  DEBOUNCE_PRESSED
+} DEBOUNCE_STATES;
 
 
 //*****************************************************************************
@@ -45,6 +62,9 @@ void initialize_hardware(void)
 	
 	// Enable PS2 joystick
 	ps2_initialize();
+	
+	// Configure adc sample sequencer to sample from x and y separately
+	ps2_adc_init_hw3();
 	
 	// Enable TIMER0 A and B for HW3
 	timer_config_hw3();
@@ -61,22 +81,32 @@ void initialize_hardware(void)
 
 
 
-void print_ps2(void)
+void print_ps2(uint16_t x_data, uint16_t y_data)
 {
-  uint16_t x_data, y_data;
   uint32_t i;
   char msg[80];
   while(1)
   {
 
-    x_data = ps2_get_x();
-    y_data = ps2_get_y();
     sprintf(msg,"X Dir value : 0x%03x        Y Dir value : 0x%03x\r",x_data, y_data);
     put_string(msg);
     for(i=0;i<100000; i++){}
     
   }
 }
+
+//bool ps2_adc_init_hw3(void) {
+//	
+//	// Clear sample sequencer mux select bits
+//	ADC0->SSMUX2 &= ~(ADC_SSMUX2_MUX0_M | ADC_SSMUX2_MUX1_M);
+//	
+//	// Select 1st sample from PS2 X channel
+//	ADC0->SSMUX2 |= PS2_X_ADC_CHANNEL;
+//	
+//	// Select 2nd sample from PS2 Y channel
+//	ADC0->SSMUX2 |= (PS2_Y_ADC_CHANNEL << 4);
+
+//}
 
 //*****************************************************************************
 //*****************************************************************************
@@ -95,24 +125,58 @@ main(void)
   put_string(individual_2);
   put_string("\n\r");  
   put_string("************************************\n\r");
-  
+	
   // Reach infinite loop
   while(1){
-		if(Alert_Timer0A){
+		
+		//print_ps2(curr_x, curr_y);
+		
+		if(Alert_Timer0A) {
+			timer0A_count++;
 			Alert_Timer0A = false;
+		}
+		
+		if(Alert_Timer0B) {
+			timer0B_count++;
+			Alert_Timer0B = false;
+		}
+		
+		// If interrupt A has occurred 10 times
+		if(timer0A_count == 10){
+			
+			// Toggle Blue LED
 			if(!lp_io_read_pin(BLUE_BIT)) {
 				lp_io_set_pin(BLUE_BIT);
 			} else {
 				lp_io_clear_pin(BLUE_BIT);
 			}
+			
+			// Reset timer0A count
+			timer0A_count = 0;
 		}
-		if(Alert_Timer0B) {
+		
+		// If interrupt B has occurred 10 times
+		if(timer0B_count == 10) {
+			
+			// Reset timer0B alert
 			Alert_Timer0B = false;
+			
+			// Toggle Green LED
 			if(!lp_io_read_pin(GREEN_BIT)) {
 				lp_io_set_pin(GREEN_BIT);
 			} else {
 				lp_io_clear_pin(GREEN_BIT);
 			}
+			
+			
+			// Update current x position with current PS2 joystick ADC value
+			curr_x += ADC0->SSFIFO2 & ADC_SSFIFO2_DATA_M;
+			
+			// Update current y position with current PS2 joystick ADC value
+			curr_y += ADC0->SSFIFO2 & ADC_SSFIFO2_DATA_M;
+			
+			// Reset timer0B count
+			timer0B_count = 0;
 		}
-  }
+	}
 }
