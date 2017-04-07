@@ -98,27 +98,36 @@ void initialize_hardware(void) {
 }
 
 int debounce_sw1(void) {
-  static uint16_t sw1_values = 0xFFFF;
-  sw1_values = sw1_values << 1;
-
-  if (lp_io_read_pin(SW1_BIT)) {
-    sw1_values |= 1;
-  }
-  if (sw1_values == 0xFFC0) {
-    return 1;
+  static uint16_t sw1_count = 0;
+	bool return_value = false;
+	
+	
+	if (lp_io_read_pin(SW1_BIT)) {
+		sw1_count = 0;
+	} else if (sw1_count <= 6) {
+		sw1_count++;
+	}
+	
+  if (!lp_io_read_pin(SW1_BIT)) {
+		sw1_count++;
   } else {
-    return 0;
-  }
+		sw1_count = 0;
+	}
+	
+	return sw1_count == 6;
 }
 
 // updates the pixel map
-void update_lcd_shadow_map(uint32_t xpx, uint32_t ypx) {
-  pixels[xpx / 32][ypx] |= (1 << (xpx % 32));
+void update_lcd_shadow_map(uint32_t xpx, uint32_t ypx, bool set_bit) {
+  if (set_bit)
+		pixels[ypx / 32][xpx] |= (1 << (ypx % 32));
+	else
+		pixels[ypx / 32][xpx] &= ~(1 << (ypx % 32));
 }
 
 // reads the pixel map 
 bool read_lcd(uint32_t xpx, uint32_t ypx) {
-  if ((pixels[xpx / 32][ypx] & (1 << (xpx % 32))) == 1)
+  if ((pixels[ypx / 32][xpx] & (1 << (ypx % 32))))
     return true;
   else
     return false;
@@ -174,7 +183,8 @@ bool move_y_pixels(uint32_t * prev, uint32_t * curr) {
 // MAIN 
 //*****************************************************************************
 bool delX, delY;
-uint8_t MODE = 1;
+bool MODE = true;
+bool ERASE = false;
 	
 int
 main(void) {
@@ -198,71 +208,31 @@ main(void) {
 
   // Reach infinite loop
   while (1) {
-
+		
+		if (MODE == MOVE || ERASE) {
+			lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, move_color);
+		} else {
+			lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+		}
+			
     // TIMER0A HANDLER
     if (Alert_Timer0A) {
       timer0A_count++;
       Alert_Timer0A = false;
 
       if (debounce_sw1()) {
-        MODE = ~MODE;
-        if (MODE) {
-          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
-        }
+        MODE = !MODE;
       }
 			
-			// If in draw mode, check for X and Y changes and update lcd accordingly 
-      if (MODE) {
-        delX = move_x_pixels( & prev_lcdX, & curr_lcdX);
-        delY = move_y_pixels( & prev_lcdY, & curr_lcdY);
-        if (delX || delY) {
-          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color); //draw one pixel 
-          update_lcd_shadow_map(curr_lcdX, curr_lcdY); 						//update the lcd_shadow_map
-        }
-      } else {     
-				
-				// In move and erase mode, we have 4 conditions to check. 
-				// We are having issue with reading our read_lcd at the moment (most likely due issues in the heap size)
-				// hence, bug : it always erases in the move mode. We tried changing our shadow map code to have a malloc 
-				// but there was a heap overflow even after we increased the heap size in the .s file. 
-				
-        delX = move_x_pixels( & prev_lcdX, & curr_lcdX);
-        delY = move_y_pixels( & prev_lcdY, & curr_lcdY);
-
-				//delX = delta X; delY = deltaY (change in x and y) 
-        if (delX && delY) {     //both change 
-          if (read_lcd(prev_lcdX, prev_lcdY)) {   //if 1 in pixel map 
-            lcd_draw_pixel(prev_lcdX, 1, prev_lcdY, 1, draw_color);
-          } else {
-            lcd_draw_pixel(prev_lcdX, 1, prev_lcdY, 1, LCD_COLOR_BLACK);
-          }
-          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, move_color);
-					
-        } else if (delX && !delY) {
-          if (read_lcd(prev_lcdX, curr_lcdY)) {
-            lcd_draw_pixel(prev_lcdX, 1, curr_lcdY, 1, draw_color);
-          } else {
-            lcd_draw_pixel(prev_lcdX, 1, curr_lcdY, 1, LCD_COLOR_BLACK);
-          }
-
-          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, move_color);
-					
-        } else if (!delX && delY) {
-          if (read_lcd(curr_lcdX, prev_lcdY)) {
-            lcd_draw_pixel(curr_lcdX, 1, prev_lcdY, 1, draw_color);
-          } else {
-            lcd_draw_pixel(curr_lcdX, 1, prev_lcdY, 1, LCD_COLOR_BLACK);
-          }
-          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, move_color);
-        } else {
-          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, move_color);
-        }
-      }
     }
 
     // TIMER0B HANDLER
     if (Alert_Timer0B) {
       timer0B_count++;
+			
+			// Start SS2 conversion
+      ADC0 -> PSSI |= ADC_PSSI_SS2;
+			
       Alert_Timer0B = false;
     }
 
@@ -277,6 +247,57 @@ main(void) {
 
       // Update current y position with current PS2 joystick ADC value
       curr_x_px = ADC0 -> SSFIFO2 & ADC_SSFIFO2_DATA_M;
+			
+			// If in draw mode, check for X and Y changes and update lcd accordingly 
+      if (MODE) {
+        delX = move_x_pixels( & prev_lcdX, & curr_lcdX);
+        delY = move_y_pixels( & prev_lcdY, & curr_lcdY);
+        if (delX || delY) {
+          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color); //draw one pixel 
+          update_lcd_shadow_map(curr_lcdX, curr_lcdY, true); 						//update the lcd_shadow_map
+        }
+      } else {     
+				
+				// IN MOVE MODE, we have 4 conditions to check for direction. 				
+				ERASE = !lp_io_read_pin(SW2_BIT);
+				
+        delX = move_x_pixels( & prev_lcdX, & curr_lcdX);
+        delY = move_y_pixels( & prev_lcdY, & curr_lcdY);
+
+				//delX = delta X; delY = deltaY (change in x and y) 
+        if (delX && delY) {     //both change 
+					if (ERASE) {
+						lcd_draw_pixel(prev_lcdX, 1, prev_lcdY, 1, LCD_COLOR_BLACK);
+						update_lcd_shadow_map(prev_lcdX, prev_lcdY, false);
+					} else if (read_lcd(prev_lcdX, prev_lcdY)) { //if not in erase, and location=green
+            lcd_draw_pixel(prev_lcdX, 1, prev_lcdY, 1, draw_color);
+          } else /* not in erase and location is black */{
+            lcd_draw_pixel(prev_lcdX, 1, prev_lcdY, 1, LCD_COLOR_BLACK);
+          }
+					
+        } else if (delX && !delY) {
+          if (ERASE) {
+						lcd_draw_pixel(prev_lcdX, 1, curr_lcdY, 1, LCD_COLOR_BLACK);
+						update_lcd_shadow_map(prev_lcdX, curr_lcdY, false);
+					} else if (read_lcd(prev_lcdX, curr_lcdY)) { //if not in erase, and location=green
+            lcd_draw_pixel(prev_lcdX, 1, curr_lcdY, 1, draw_color);
+          } else /* not in erase and location is black */ {
+            lcd_draw_pixel(prev_lcdX, 1, curr_lcdY, 1, LCD_COLOR_BLACK);
+          }
+					
+        } else if (!delX && delY) {
+          if (ERASE) {
+						lcd_draw_pixel(curr_lcdX, 1, prev_lcdY, 1, LCD_COLOR_BLACK);
+						update_lcd_shadow_map(curr_lcdX, prev_lcdY, false);
+					} else if (read_lcd(curr_lcdX, prev_lcdY)) { //if not in erase, and location=green
+            lcd_draw_pixel(curr_lcdX, 1, prev_lcdY, 1, draw_color);
+          } else {
+            lcd_draw_pixel(curr_lcdX, 1, prev_lcdY, 1, LCD_COLOR_BLACK);
+          }
+        } else /* not in erase and location is black */ {
+					
+        }
+      }
 
     }
     // If interrupt A has occurred 10 times -> TOGGLE BLUE LED
@@ -304,16 +325,9 @@ main(void) {
       } else {
         lp_io_clear_pin(GREEN_BIT);
       }
-      // Start SS2 conversion
-      ADC0 -> PSSI |= ADC_PSSI_SS2;
 
       // Reset timer0B count
       timer0B_count = 0;
-    }
-    // POLL FOR SW2 BIT
-    if (!lp_io_read_pin(SW2_BIT)) {
-      MODE = 0;
-      put_string("\n\r ERASE MODE ON");
     }
   }
 }

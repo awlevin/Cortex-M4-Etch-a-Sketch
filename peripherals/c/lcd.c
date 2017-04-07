@@ -239,7 +239,6 @@ void lcd_draw_pixel(
   uint16_t color
 )
 {
-  uint16_t i,j;
   uint16_t x0;
   uint16_t x1;
   uint16_t y0;

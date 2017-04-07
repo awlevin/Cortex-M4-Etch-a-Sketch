@@ -1,4 +1,4 @@
---cpu=Cortex-M4.fp
+--cpu Cortex-M4.fp
 ".\obj\main.o"
 ".\obj\adc.o"
 ".\obj\gpio_port.o"
@@ -6,7 +6,7 @@
 ".\obj\launchpad_io.o"
 ".\obj\lcd.o"
 ".\obj\ps2.o"
-"..\lib\ECE353-Validate.lib"
+"I:\ECE 353\lib\ECE353-Validate.lib"
 ".\obj\startup_tm4c123.o"
 ".\obj\system_tm4c123.o"
 --library_type=microlib --ro-base 0x00000000 --entry 0x00000000 --rw-base 0x20000000 --entry Reset_Handler --first __Vectors --strict --summary_stderr --info summarysizes --map --xref --callgraph --symbols

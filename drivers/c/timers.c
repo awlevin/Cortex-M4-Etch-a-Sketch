@@ -186,9 +186,11 @@ void timer_config_hw3(void)
   TIMER0_Type *timer_t = (TIMER0_Type *) TIMER0_BASE;
 	
 	// Declare constants
-	const uint8_t TIMER0A_PRESCALAR = 50;
-	const uint8_t TIMER0B_PRESCALAR = 150;
-	const uint16_t TIMER_LOAD_VALUE = 10000;
+	const uint8_t TIMER0A_PRESCALAR = 8;
+	const uint8_t TIMER0B_PRESCALAR = 32;
+	const uint16_t TIMER0A_LOAD_VALUE = 62500;
+	const uint16_t TIMER0B_LOAD_VALUE = 46875;
+
 	
 	
 	
@@ -220,8 +222,8 @@ void timer_config_hw3(void)
 	timer_t->IMR |= TIMER_IMR_TBTOIM;
 	
 	// Set load register values
-	timer_t->TAILR = TIMER_LOAD_VALUE;
-	timer_t->TBILR = TIMER_LOAD_VALUE;
+	timer_t->TAILR = TIMER0A_LOAD_VALUE;
+	timer_t->TBILR = TIMER0B_LOAD_VALUE;
 	
 	// Set TIMER0A and TIMER0B prescalars
 	timer_t->TAPR = TIMER0A_PRESCALAR;
@@ -267,9 +269,7 @@ void TIMER0B_Handler(void) {
 	
 	// Set global timer alert variable to true for handling
 	Alert_Timer0B = true;
-	
-	ADC0->PSSI |= ADC_PSSI_SS2;
-	
+		
 	// Clear the interrupt status bit
 	TIMER0->ICR |= TIMER_ICR_TBTOCINT;
 }
