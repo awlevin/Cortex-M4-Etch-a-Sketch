@@ -159,12 +159,12 @@ bool initialize_adc_hw3()
 		
   // Set the event multiplexer to trigger conversion on a processor trigger
   // for sample sequencer #2.
-//	ADC0->EMUX &= ~ADC_EMUX_EM2_M;
-//	ADC0->EMUX |= ADC_EMUX_EM2_PROCESSOR;
+  //	ADC0->EMUX &= ~ADC_EMUX_EM2_M;
+  //	ADC0->EMUX |= ADC_EMUX_EM2_PROCESSOR;
 		
-		// TA said this sets all of the sample sequencers to be triggered by software which is
-		// ok for this lab
-		ADC0->EMUX = 0; 
+	// TA said this sets all of the sample sequencers to be triggered by software which is
+	// ok for this lab
+	ADC0->EMUX = 0; 
 	
 	// Configure SSMUX2 to read raw ADC values for X and then Y
 	ADC0 -> SSMUX2 |= (PS2_X_ADC_CHANNEL << 4 | (PS2_Y_ADC_CHANNEL));

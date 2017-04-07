@@ -223,7 +223,14 @@ void lcd_draw_image(
 
 
 
-
+/*******************************************************************************
+* Function Name: lcd_draw_pixel
+********************************************************************************
+* Summary: draws single pixel  
+*
+* Return:
+*  Nothing
+*******************************************************************************/
 void lcd_draw_pixel(
   uint16_t x_start, 
   uint16_t image_width_bits, 
@@ -245,7 +252,6 @@ void lcd_draw_pixel(
   y1 = y_start  + image_height_pixels-1 ;
   
   lcd_set_pos(x0, x1, y0, y1);
-	
 	lcd_write_data_u16(color);
   
 }

@@ -22,7 +22,7 @@ Dialog DLL:      TCM.DLL V1.21.0.0
  
 <h2>Project:</h2>
 C:\ece353hw3\HW3\HW3.uvprojx
-Project File Date:  04/06/2017
+Project File Date:  04/07/2017
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
@@ -45,30 +45,32 @@ compiling main.c...
   
 ool initialize_adc_hw3();
 main.c(80): warning:  #223-D: function "initialize_serial_debug" declared implicitly
-      initialize_serial_debug();
-main.c(167): warning:  #223-D: function "put_string" declared implicitly
-      put_string("\n\r");
+    initialize_serial_debug();
+main.c(184): warning:  #223-D: function "put_string" declared implicitly
+    put_string("\n\r");
+main.c(319): warning:  #1-D: last line of file ends without a newline
+  }
 main.c(47): warning:  #177-D: variable "sw1_debounce_counter"  was declared but never referenced
   static int sw1_debounce_counter = 0;
-main.c: 4 warnings, 0 errors
+main.c: 5 warnings, 0 errors
 compiling launchpad_io.c...
 compiling timers.c...
 compiling lcd.c...
-..\peripherals\c\lcd.c(235): warning:  #177-D: variable "i"  was declared but never referenced
+..\peripherals\c\lcd.c(242): warning:  #177-D: variable "i"  was declared but never referenced
     uint16_t i,j;
-..\peripherals\c\lcd.c(235): warning:  #177-D: variable "j"  was declared but never referenced
+..\peripherals\c\lcd.c(242): warning:  #177-D: variable "j"  was declared but never referenced
     uint16_t i,j;
 ..\peripherals\c\lcd.c: 2 warnings, 0 errors
 assembling startup_TM4C123.s...
+compiling system_TM4C123.c...
 compiling ps2.c...
 ..\drivers\include\adc.h(73): warning:  #1295-D: Deprecated declaration initialize_adc_hw3 - give arg types
   
 ool initialize_adc_hw3();
 ..\peripherals\c\ps2.c: 1 warning, 0 errors
-compiling system_TM4C123.c...
 linking...
-Program Size: Code=8088 RO-data=744 RW-data=108 ZI-data=13700  
-".\obj\ece353_base_project.axf" - 0 Error(s), 11 Warning(s).
+Program Size: Code=8084 RO-data=744 RW-data=108 ZI-data=13700  
+".\obj\ece353_base_project.axf" - 0 Error(s), 12 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -94,10 +96,10 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.0.1
 
    * Component: Keil::Device:Startup:1.0.1
+      Include file:  Device\Include\TM4C123\TM4C123.h
       Source file:   Device\Source\system_TM4C123.c
       Source file:   Device\Source\ARM\startup_TM4C123.s
-      Include file:  Device\Include\TM4C123\TM4C123.h
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
