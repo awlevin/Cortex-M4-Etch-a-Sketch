@@ -130,12 +130,24 @@ bool read_lcd(uint32_t xpx, uint32_t ypx) {
 bool move_x_pixels(uint32_t * prev, uint32_t * curr) {
 
     * prev = * curr;
-    if (curr_x_px >= x_left_threshold  && (*curr <= 239)) {
+    if (curr_x_px >= x_left_threshold ) {
+	if((*curr <= 239)) {
         * curr += 1;
         return true;
+	}
+	else {
+	  *curr = 0;
+	   return true;
+	}
     } else if (curr_x_px <= x_right_threshold) {
+`	if(*curr > 0) {
         * curr -= 1;
         return true;
+	}
+	else {
+	 *curr = 239;
+	  return true;
+	}
     } else {
         return false;
     }
@@ -144,13 +156,25 @@ bool move_x_pixels(uint32_t * prev, uint32_t * curr) {
 bool move_y_pixels(uint32_t * prev, uint32_t * curr) {
 
     * prev = * curr;
-    if (curr_y_px >= y_up_threshold && (*curr <= 319) ) {
+    if (curr_y_px >= y_up_threshold ) {
+        if((*curr <= 319)) {
         * curr += 1;
         return true;
+	}
+	else {
+	  *curr = 0;
+	   return true;
+	};
     }
     if (curr_y_px <= y_down_threshold) {
+       if(*curr > 0) {
         * curr -= 1;
         return true;
+	}
+	else {
+	 *curr = 319;
+	  return true;
+	}
     } else {
         return false;
     }
