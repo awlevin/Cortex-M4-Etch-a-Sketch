@@ -43,13 +43,11 @@ uint32_t prev_lcdY = 159;
 uint16_t curr_x_px;
 uint16_t curr_y_px;
 
-static int sw1_debounce_counter = 0;
 static int timer0A_count = 0;
 static int timer0B_count = 0;
 uint16_t draw_color = LCD_COLOR_GREEN;
 uint16_t move_color = LCD_COLOR_RED;
 uint32_t pixels[10][240];
-uint8_t mode = 1;
 
 uint16_t x_left_threshold = (0xFFF / 4) * 3;
 uint16_t y_up_threshold = (0xFFF / 4) * 3;
@@ -62,6 +60,9 @@ typedef enum {
   DEBOUNCE_ONE,
   DEBOUNCE_1ST_ZERO,
   DEBOUNCE_2ND_ZERO,
+	DEBOUNCE_3RD_ZERO,
+	DEBOUNCE_4TH_ZERO,
+	DEBOUNCE_5TH_ZERO,
   DEBOUNCE_PRESSED
 }
 DEBOUNCE_STATES;
@@ -72,10 +73,48 @@ typedef enum {
 }
 MODE_STATES;
 
-//static MODE_STATES mode = DRAW;
+static MODE_STATES mode = DRAW;
+static DEBOUNCE_STATES state = DEBOUNCE_ONE;
 
 //*****************************************************************************
 //*****************************************************************************
+bool sw1_debounce_fsm() {
+	
+	bool logic_level = lp_io_read_pin(SW1_BIT);
+
+	switch(state) {
+		case DEBOUNCE_ONE:
+			if(logic_level == 0) state = DEBOUNCE_2ND_ZERO;
+			else state = DEBOUNCE_ONE;
+		case DEBOUNCE_1ST_ZERO:
+			if(logic_level == 0) state = DEBOUNCE_3RD_ZERO;
+			else state = DEBOUNCE_ONE;
+		case DEBOUNCE_2ND_ZERO:
+			if(logic_level == 0) state = DEBOUNCE_4TH_ZERO;
+			else state = DEBOUNCE_ONE;
+		case DEBOUNCE_3RD_ZERO:
+			if(logic_level == 0) state = DEBOUNCE_4TH_ZERO;
+			else state = DEBOUNCE_ONE;
+		case DEBOUNCE_4TH_ZERO:
+			if(logic_level == 0) state = DEBOUNCE_5TH_ZERO;
+			else state = DEBOUNCE_ONE;
+		case DEBOUNCE_5TH_ZERO:
+			if(logic_level == 0) state = DEBOUNCE_PRESSED;
+			else state = DEBOUNCE_ONE;
+		case DEBOUNCE_PRESSED:
+			if(logic_level == 0) {
+				state = DEBOUNCE_PRESSED;
+				return true;
+			}
+			else state = DEBOUNCE_ONE;
+	}
+	
+	return false;
+}
+
+
+
+
 void initialize_hardware(void) {
   initialize_serial_debug();
 
@@ -136,14 +175,6 @@ bool move_y_pixels(uint32_t * prev, uint32_t * curr) {
   }
 }
 
-void debounce_wait(void) {
-  int i = 10000;
-  // Delay
-  while (i > 0) {
-    i--;
-  }
-}
-
 void print_ps2(uint16_t x_data, uint16_t y_data) {
   uint32_t i;
   char msg[80];
@@ -180,7 +211,9 @@ main(void) {
 		// TIMER0A HANDLER
     if (Alert_Timer0A) {
       timer0A_count++;
-      sw1_debounce_counter++;
+      if( sw1_debounce_fsm() ) {
+				mode = ~mode;
+			}
       Alert_Timer0A = false;
     }
 
@@ -239,28 +272,16 @@ main(void) {
       // Reset timer0B count
       timer0B_count = 0;
     }
-
-    // Wait 60 milliseconds for debounce counter
-    if (sw1_debounce_counter == 6) {
-			
-			if(lp_io_read_pin(SW1_BIT)) {
-			mode = ~mode;
-			if(mode) {
-				lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
-		}
-			
-		//Reset debounce counter
-		sw1_debounce_counter = 0;
 	}
 			
-		if(mode){
-			  if (move_x_pixels( & prev_lcdX, & curr_lcdX) || move_y_pixels( & prev_lcdY, & curr_lcdY)) {
+		if(mode == DRAW){
+			  if (move_x_pixels( &prev_lcdX, &curr_lcdX) || move_y_pixels( &prev_lcdY, &curr_lcdY)) {
           lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
           update_lcd_shadow_map(curr_lcdX, curr_lcdY);
 		} 
 	}	else {
 			
-		if (move_x_pixels( & prev_lcdX, & curr_lcdX) || move_y_pixels( & prev_lcdY, & curr_lcdY)) {
+		if (move_x_pixels( &prev_lcdX, &curr_lcdX) || move_y_pixels( &prev_lcdY, &curr_lcdY)) {
 			if(read_lcd(prev_lcdX, prev_lcdY)) {
 				lcd_draw_pixel(prev_lcdX, 1, prev_lcdY, 1, draw_color);
 				
@@ -269,11 +290,4 @@ main(void) {
 			}
 		}
 	}
-}
-
-		// POLL FOR SW2 BIT
-    if (!lp_io_read_pin(SW2_BIT)) {
-      put_string("\n\r ERASE MODE ON");
-    }
-  }
 }
