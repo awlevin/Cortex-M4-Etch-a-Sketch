@@ -54,6 +54,11 @@ uint16_t y_up_threshold = (0xFFF / 4) * 3;
 uint16_t x_right_threshold = (0xFFF / 4);
 uint16_t y_down_threshold = (0xFFF / 4);
 
+volatile bool right;
+volatile bool up;
+volatile bool down; 
+volatile bool left; 
+
 //************ENUMS********************//
 //@Deprecated
 typedef enum {
@@ -150,25 +155,46 @@ bool read_lcd(uint32_t xpx, uint32_t ypx) {
     return false;
 }
 
-bool move_x_pixels(uint32_t * prev, uint32_t * curr) {
+bool move_x_pixels_left(uint32_t * prev, uint32_t * curr) {
 
   * prev = * curr;
-  if (curr_x_px >= x_left_threshold  && (*curr <= 239)) { * curr += 1;
-    return true;
-  } else if (curr_x_px <= x_right_threshold) { * curr -= 1;
+  if (curr_x_px >= x_left_threshold  && (*curr <= 239)) 
+		{ * curr += 1;
     return true;
   } else {
     return false;
   }
 }
 
-bool move_y_pixels(uint32_t * prev, uint32_t * curr) {
+bool move_y_pixels_up(uint32_t * prev, uint32_t * curr) {
 
   * prev = * curr;
-  if (curr_y_px >= y_up_threshold && (*curr <= 319) ) { * curr += 1;
+  if (curr_y_px >= y_up_threshold && (*curr <= 319) ) 
+		{ * curr += 1;
     return true;
+  } else if (*curr >= 319) {
+		curr_lcdX = 0; 
+	}
+   else {
+    return false;
   }
-  if (curr_y_px <= y_down_threshold) { * curr -= 1;
+}
+
+
+bool move_y_pixels_down(uint32_t * prev, uint32_t * curr) {
+	  if (curr_y_px <= y_down_threshold) 
+			{ * curr -= 1;
+    return true;
+  } else {
+    return false;
+  }
+	
+}
+
+
+bool move_x_pixels_right(uint32_t * prev, uint32_t * curr){
+	if (curr_x_px <= x_right_threshold) 
+		{ * curr -= 1;
     return true;
   } else {
     return false;
@@ -211,29 +237,33 @@ main(void) {
 		// TIMER0A HANDLER
     if (Alert_Timer0A) {
       timer0A_count++;
-      if( sw1_debounce_fsm() ) {
-				mode = ~mode;
-			}
+      //if( sw1_debounce_fsm() ) {
+			//	mode = ~mode;
+			//}
       Alert_Timer0A = false;
     }
 
 		// TIMER0B HANDLER
     if (Alert_Timer0B) {
       timer0B_count++;
+			  
+			// Start SS2 conversion
+      ADC0 -> PSSI |= ADC_PSSI_SS2;
+			
       Alert_Timer0B = false;
     }
 		
 		// ADC COMPUTATION HANDLER (UPDATES PS2 X/Y VALUES)
     if (Alert_ADC0_Conversion) {
-      
+			
 			// Toggle ADC0 Conversion notifier
 			Alert_ADC0_Conversion = false;
       
       // Update current x position with current PS2 joystick ADC value
-      curr_x_px = ADC0 -> SSFIFO2 & ADC_SSFIFO2_DATA_M;
+      curr_y_px = ADC0 -> SSFIFO2 & ADC_SSFIFO2_DATA_M;
 
       // Update current y position with current PS2 joystick ADC value
-      curr_y_px = ADC0 -> SSFIFO2 & ADC_SSFIFO2_DATA_M;
+      curr_x_px = ADC0 -> SSFIFO2 & ADC_SSFIFO2_DATA_M;
 
       // TESTING PS2 values. WORKS NOW >>>
       print_ps2(curr_x_px, curr_y_px);
@@ -253,7 +283,7 @@ main(void) {
       timer0A_count = 0;
     }
 
-    // If interrupt B has occurred 10 times (TOGGLE GREEN LED AND START ADC CONVERSION)
+    // If interrupt B has occurred 10 times (TOGGLE GREEN LED)
     if (timer0B_count == 10) {
 
       // Reset timer0B alert
@@ -266,20 +296,45 @@ main(void) {
         lp_io_clear_pin(GREEN_BIT);
       }
 
-      // Start SS2 conversion
-       ADC0 -> PSSI |= ADC_PSSI_SS2;
-
       // Reset timer0B count
       timer0B_count = 0;
     }
-	}
+		
+	//if(mode == DRAW){
+				up = move_y_pixels_up( &prev_lcdY, &curr_lcdY);
+				down = move_y_pixels_down( &prev_lcdY, &curr_lcdY);
+				right = move_x_pixels_right( &prev_lcdX, &curr_lcdX);
+				left = move_x_pixels_left( &prev_lcdX, &curr_lcdX); 
 			
-		if(mode == DRAW){
-			  if (move_x_pixels( &prev_lcdX, &curr_lcdX) || move_y_pixels( &prev_lcdY, &curr_lcdY)) {
+			  if (left) {
           lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
-          update_lcd_shadow_map(curr_lcdX, curr_lcdY);
-		} 
-	}	else {
+          update_lcd_shadow_map(curr_lcdX, curr_lcdY);			
+		    }
+				
+			  if (right) {
+          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+          update_lcd_shadow_map(curr_lcdX, curr_lcdY);			
+		    }
+								
+        if (up) {
+          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+          update_lcd_shadow_map(curr_lcdX, curr_lcdY);			
+		    }
+				
+        if (down) {
+          lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+          update_lcd_shadow_map(curr_lcdX, curr_lcdY);			
+		    }
+					
+				lcd_draw_pixel(curr_lcdX, 1, curr_lcdY, 1, draw_color);
+        update_lcd_shadow_map(curr_lcdX, curr_lcdY);			
+
+
+
+
+
+		/*
+	//}	else {
 			
 		if (move_x_pixels( &prev_lcdX, &curr_lcdX) || move_y_pixels( &prev_lcdY, &curr_lcdY)) {
 			if(read_lcd(prev_lcdX, prev_lcdY)) {
@@ -289,5 +344,9 @@ main(void) {
 					lcd_draw_pixel(prev_lcdX, 1, prev_lcdY, 1, LCD_COLOR_BLACK);
 			}
 		}
+	}*/
+
 	}
+			
+
 }

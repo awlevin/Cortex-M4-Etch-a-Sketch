@@ -11,18 +11,18 @@ Rebuild target 'HW2'
 compiling main.c...
 ..\drivers\include\adc.h(73): warning:  #1295-D: Deprecated declaration initialize_adc_hw3 - give arg types
   bool initialize_adc_hw3();
-main.c(119): warning:  #223-D: function "initialize_serial_debug" declared implicitly
+main.c(124): warning:  #223-D: function "initialize_serial_debug" declared implicitly
     initialize_serial_debug();
-main.c(183): warning:  #223-D: function "put_string" declared implicitly
+main.c(181): warning:  #940-D: missing return statement at end of non-void function "move_y_pixels_up"
+  }
+main.c(209): warning:  #223-D: function "put_string" declared implicitly
     put_string(msg);
-main.c(179): warning:  #177-D: variable "i" was declared but never referenced
+main.c(205): warning:  #177-D: variable "i" was declared but never referenced
     uint32_t i;
-main.c(192): warning:  #223-D: function "put_string" declared implicitly
+main.c(218): warning:  #223-D: function "put_string" declared implicitly
     put_string("\n\r");
-main.c(215): warning:  #188-D: enumerated type mixed with another type
-                                mode = ~mode;
-main.c(277): warning:  #111-D: statement is unreachable
-                if(mode == DRAW){
+main.c(81): warning:  #177-D: variable "mode" was declared but never referenced
+  static MODE_STATES mode = DRAW;
 main.c: 7 warnings, 0 errors
 compiling adc.c...
 ..\drivers\include\adc.h(73): warning:  #1295-D: Deprecated declaration initialize_adc_hw3 - give arg types
@@ -51,7 +51,7 @@ compiling ps2.c...
 assembling startup_TM4C123.s...
 compiling system_TM4C123.c...
 linking...
-Program Size: Code=8092 RO-data=744 RW-data=100 ZI-data=13700  
+Program Size: Code=8388 RO-data=744 RW-data=104 ZI-data=13696  
 ".\obj\ece353_base_project.axf" - 0 Error(s), 14 Warning(s).
 
 <h2>Software Packages used:</h2>
@@ -84,5 +84,7 @@ Package Vendor: Keil
       Include file:  Device\Include\TM4C123\TM4C123.h
 Load "I:\\WIN\\Desktop\\ece353hw3\\HW3\\obj\\ece353_base_project.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
-Connection failed!, error code=&d
-Error: Flash Download failed  -  Target DLL has been cancelled
+Erase Done.
+Programming Done.
+Verify OK.
+ailed  -  Target DLL has been cancelled
